@@ -1,0 +1,125 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<MainLayout title="Контакты" description="Свяжитесь с редакцией сайта. По вопросам рекламы и сотрудничества.">
+    <Header />
+    <main class="static-page container">
+        <h1 class="h1">Контакты</h1>
+        
+        <div class="contacts-grid">
+            <article class="contact-block">
+                <h3>📮 Напишите нам</h3>
+                <p>У вас есть вопросы по работе сайта, нашли ошибку или хотите предложить тему для статьи? Мы всегда открыты для предложений.</p>
+                
+                <a href="mailto:info@astrologia-top.ru" class="email-link">
+                    info@astrologia-top.ru
+                </a>
+                <p class="note">Мы стараемся отвечать в течение 24 часов.</p>
+            </article>
+
+            <article class="contact-block highlight">
+                <h3>🤝 Сотрудничество и реклама</h3>
+                <p>Мы предлагаем различные форматы размещения рекламы: баннеры, нативные статьи, интеграции в гороскопы.</p>
+                <ul>
+                    <li>Аудитория: Женщины 25-45 лет</li>
+                    <li>Тематика: Астрология, Психология, Эзотерика</li>
+                </ul>
+                <p>По вопросам медиакита и прайса пишите с пометкой <strong>"Реклама"</strong>.</p>
+            </article>
+        </div>
+
+        <div class="socials-section">
+            <h3>Мы в соцсетях</h3>
+            <div class="social-links">
+                <a href="#" target="_blank" class="social-btn telegram">Telegram канал</a>
+                <a href="#" target="_blank" class="social-btn vk">ВКонтакте</a>
+            </div>
+        </div>
+
+    </main>
+    <Footer />
+</MainLayout>
+
+<style>
+    .contacts-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 30px;
+        margin-top: 30px;
+    }
+
+    @media (min-width: 768px) {
+        .contacts-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    .contact-block {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 12px;
+        border: 1px solid #eee;
+    }
+
+    .contact-block.highlight {
+        background: #fff8f0; /* Легкий оранжевый оттенок, намек на бизнес */
+        border-color: #ffeeba;
+    }
+
+    .email-link {
+        display: inline-block;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #8B5CF6;
+        text-decoration: none;
+        margin: 15px 0;
+        border-bottom: 2px solid transparent;
+        transition: border-color 0.2s;
+    }
+
+    .email-link:hover {
+        border-bottom-color: #8B5CF6;
+    }
+
+    .note {
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .socials-section {
+        margin-top: 50px;
+        text-align: center;
+    }
+
+    .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .social-btn {
+        padding: 10px 25px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: transform 0.2s;
+    }
+
+    .social-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .social-btn.telegram {
+        background: #0088cc;
+        color: white;
+    }
+
+    .social-btn.vk {
+        background: #0077FF;
+        color: white;
+    }
+</style>
