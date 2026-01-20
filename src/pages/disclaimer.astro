@@ -1,0 +1,28 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<MainLayout title="Отказ от ответственности" noindex={true}>
+    <Header />
+    <main class="static-page container">
+        <div class="container container-sm">
+            <h1 class="h3">Отказ от ответственности</h1>
+            <article class="content">
+                <div class="alert-box mt-20" style="background: #fff3cd; padding: 20px; border-radius: 8px; border: 1px solid #ffeeba;">
+                    <p><strong>Важно:</strong> Вся информация, представленная на данном сайте, носит исключительно развлекательный и ознакомительный характер.</p>
+                </div>
+                
+                <br/>
+
+                <p class="mt-20">Астрология, нумерология и гороскопы не являются точными науками. Прогнозы и характеристики не могут гарантировать 100% совпадения с реальностью.</p>
+
+                <p class="mt-20">Администрация сайта не несет ответственности за любые решения (финансовые, личные, медицинские), принятые пользователем на основе информации, полученной на этом сайте.</p>
+
+                <p class="mt-20">Пожалуйста, в вопросах здоровья и финансов полагайтесь на мнение профильных специалистов.</p>
+            </article>
+        </div>
+    </main>
+    <Footer />
+</MainLayout>

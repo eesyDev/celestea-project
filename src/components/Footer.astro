@@ -1,3 +1,7 @@
+---
+const currentYear = new Date().getFullYear();
+const yearString = currentYear === 2025 ? "2025" : `2025-${currentYear}`;
+---
 <footer class="footer">
     <div class="container">
         <div class="footer__wrapper">
@@ -20,16 +24,16 @@
                 <div class="footer__col">
                     <h6 class="tiny">Страницы</h6>
                     <ul>
-                        <li><a href="" class="hovered">Главная</a></li>
-                        <li><a href="" class="hovered">Зодиаки</a></li>
-                        <li><a href="" class="hovered">Нумерология</a></li>
-                        <li><a href="" class="hovered">Мистика</a></li>
+                        <li><a href="/about" style="margin-right: 15px; color: inherit;">О нас</a></li>
+                        <li><a href="/contacts" style="margin-right: 15px; color: inherit;">Контакты</a></li>
+                        <li><a href="/privacy" style="margin-right: 15px; color: inherit;">Политика конфиденциальности</a></li>
+                        <li><a href="/disclaimer" style="color: inherit;">Отказ от ответственности</a></li>
                     </ul>
                 </div>
             </div>
         </div>
         <div class="footer__bottom">
-            2025 All rights reserved
+            {yearString} Все права защищены
         </div>
     </div>
 </footer>

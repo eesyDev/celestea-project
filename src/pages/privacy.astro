@@ -1,0 +1,28 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<MainLayout title="Политика конфиденциальности" noindex={true}>
+    <Header />
+    <main class="static-page">
+        <div class="container container-sm">
+            <h1 class="h3">Политика конфиденциальности</h1>
+            <article class="content" style="font-size: 0.9rem; color: #555;">
+                <p><strong>Дата обновления: 2025 год</strong></p>
+                <p class="mt-20">Администрация сайта серьезно относится к защите ваших персональных данных. Мы не собираем личную информацию (имена, телефоны) без вашего согласия.</p>
+
+                <h3 class="mt-20">1. Сбор данных</h3>
+                <p class="mt-20">Мы используем файлы cookie для анализа трафика и показа персонализированной рекламы (Google AdSense / Яндекс). Cookie — это небольшие текстовые файлы, которые хранятся на вашем устройстве.</p>
+
+                <h3 class="mt-20 h5">2. Использование информации</h3>
+                <p>Информация используется исключительно для улучшения работы сайта и аналитики посещаемости.</p>
+
+                <h3 class="mt-20 h5">3. Сторонние сервисы</h3>
+                <p>На сайте могут быть установлены коды счетчиков (Google Analytics, Яндекс.Метрика), которые собирают обезличенные данные о посетителях.</p>
+            </article>
+        </div>
+    </main>
+    <Footer />
+</MainLayout>

@@ -1,0 +1,28 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<MainLayout title="О проекте" description="Кто мы и зачем создали этот астрологический портал">
+    <Header />
+    <main class="static-page">
+        <div class="container container-sm">
+            <h1 class="h2">О проекте</h1>
+            <article class="content">
+                <p class="mt-20">Добро пожаловать на наш астрологический портал! Мы верим, что звезды могут подсказать правильный путь, но выбор всегда остается за человеком.</p>
+                
+                <h3 class="h5 mt-20">Наша миссия</h3>
+                <p class="mt-20">Мы создали этот сайт, чтобы сделать астрологию понятной, доступной и свободной от сложных терминов. Мы хотим помочь вам разобраться в себе, найти подход к близким и построить гармоничные отношения.</p>
+
+                <h3 class="h5 mt-20">Что вы найдете на сайте?</h3>
+                <ul class="mt-20">
+                    <li>Подробные характеристики знаков зодиака.</li>
+                    <li>Анализ совместимости в любви и дружбе.</li>
+                    <li>Советы по карьере и здоровью, основанные на влиянии планет.</li>
+                </ul>
+            </article>
+        </div>
+    </main>
+    <Footer />
+</MainLayout>
