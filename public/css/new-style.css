@@ -1,3 +1,6 @@
+.mt-20 {
+    margin-top: 20px
+}
 .zodiac-grid {
     display: grid;
     grid-template-columns: 2fr 1fr; /* Текст шире, сайдбар уже */
@@ -61,6 +64,10 @@
 }
 .zodiac-sidebar {
     border: 1px solid var(--gold);
+}
+
+.static-page {
+    margin-top: 3rem;
 }
 
 /* На мобилках делаем одну колонку */
