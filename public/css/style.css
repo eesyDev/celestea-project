@@ -87,7 +87,7 @@ body {
 }
 
 .pattern-top-image {
-    background-image: url(../img/bg.png);
+    background-image: url(/assets/img/bg.png);
     background-repeat: repeat-y;
     background-size: 110% 50%;
     -o-object-fit: cover;
@@ -96,7 +96,7 @@ body {
 }
 
 .pattern-bottom-image {
-    background-image: url(../img/bg.png);
+    background-image: url(/assets/img/bg.png);
     background-repeat: repeat-y;
     background-size: 140% 50%;
     -o-object-fit: cover;
@@ -151,7 +151,7 @@ h3 {
 
 .h4,
 h4 {
-    font-size: 2.5em
+    font-size: 1.75em
 }
 
 .h5,
@@ -827,7 +827,7 @@ p .paragraph {
     background-color: var(--dark-blue);
     padding: 89px 0;
     color: var(--white);
-    background-image: url(../img/bg-dark.png)
+    background-image: url(/assets/img/bg-dark.png)
 }
 
 .notice>.container .heading {
@@ -1061,7 +1061,7 @@ p .paragraph {
 
 .subscribe {
     background-color: var(--dark-blue);
-    background-image: url(../img/bg-dark-1.png);
+    background-image: url(/assets/img/bg-dark-1.png);
     height: 600px;
     color: var(--white);
     display: flex;
@@ -1168,7 +1168,7 @@ p .paragraph {
 }
 
 .footer {
-    background-image: url(../img/bg.webp);
+    background-image: url(/assets/img/bg.png);
     padding: 100px 0 50px
 }
 
