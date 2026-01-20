@@ -1,0 +1,143 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import zodiacs from '../../data/zodiacs.json';
+
+  export async function getStaticPaths() {
+  return zodiacs.map((sign) => ({
+    params: { sign: sign.slug }, 
+    props: { signData: sign },  
+  }));
+}
+
+const getImageName = (slug) => {
+    const map = { 'virgo': 'virgin', 'sagittarius': 'saggitarius', 'pisces': 'pieces' };
+    return map[slug] || slug;
+};
+  const { signData } = Astro.props;
+
+const nameToSlug = zodiacs.reduce((acc, item) => {
+    acc[item.name] = item.slug;
+    return acc;
+}, {});
+
+const getSignLinks = (str) => {
+    if (!str) return [];
+    return str.split(',').map(name => {
+        const cleanName = name.trim(); // Убираем лишние пробелы
+        return {
+            name: cleanName,
+            href: `/zodiac/${nameToSlug[cleanName] || ''}` // Если вдруг опечатка, ссылка будет пустой
+        };
+    });
+};
+
+const bestMatches = getSignLinks(signData.details.best_match);
+const worstMatches = getSignLinks(signData.details.worst_match);
+
+---
+<MainLayout title={signData.seo_title} description={signData.seo_desc}>
+    <Header />
+    <main class="zodiac-single">
+        <div class="container">
+            <div class="zodiac-hero" style="text-align: center; margin-bottom: 50px;">
+                <img 
+                    src={`/assets/img/${getImageName(signData.slug)}.png`} 
+                    srcset={`/assets/img/${getImageName(signData.slug)}_2x.png 2x`}
+                    alt={signData.name}
+                    style="width: 120px; height: 120px; margin-bottom: 20px;"
+                />
+                <h1 class="h1">{signData.name}</h1>
+                <p style="font-size: 1.2rem; opacity: 0.7; margin-top: 10px;">{signData.dates}</p>
+                
+                <div class="tags" style="display: flex; justify-content: center; gap: 15px; margin-top: 20px;">
+                    <span class="tag">Element: {signData.element}</span>
+                    <span class="tag">Planet: {signData.planet}</span>
+                </div>
+            </div>
+            <div class="zodiac-grid">
+                <article class="main-content">
+                    <h4 class="h4">Общая характеристика</h4>
+                    <p>{signData.about}</p>
+                    <div class="spacer spacer--40"></div>
+                    <h4 class="h4">Мужчина {signData.name}</h4>
+                    <p>{signData.man}</p>
+     
+                    <div class="spacer spacer--40"></div>
+     
+                    <h4 class="h4">Женщина {signData.name}</h4>
+                    <p>{signData.woman}</p>
+     
+                    <div class="spacer spacer--40"></div>
+     
+                    <h4 class="h4">Любовь и отношения</h4>
+                    <p>{signData.love}</p>
+                    <div class="spacer spacer--40"></div>
+
+                    <h4 class="h4">Карьера и деньги 💰</h4>
+                    <p>{signData.career}</p>
+
+                    <div class="spacer spacer--40"></div>
+
+                    <h4 class="h4">Здоровье и тонус 🍏</h4>
+                    <p>{signData.health}</p>
+
+                    <div class="spacer spacer--40"></div>
+
+                    <h4 class="h4">Сексуальность 🔥</h4>
+                    <p>{signData.sex}</p>
+                    
+                    <div class="spacer spacer--40"></div>
+
+                    <h4 class="h4">Семья и дети 👨‍👩‍👧‍👦</h4>
+                    <p>{signData.family}</p>
+                </article>
+
+                <aside class="zodiac-sidebar">
+                    <div class="fact-card">
+                        <h4 class="h4 zodiac-sidebar-sub">Астро-факты</h4>
+                        <ul class="fact-list">
+                            <li>
+                                <strong>Планета:</strong> <span>{signData.details.ruling_planet}</span>
+                            </li>
+                            <li>
+                                <strong>Камень:</strong> <span>{signData.details.lucky_stone}</span>
+                            </li>
+                            <li>
+                                <strong>Цвета:</strong> <span>{signData.details.lucky_colors.join(', ')}</span>
+                            </li>
+                            <li>
+                                <strong>Числа:</strong> <span>{signData.details.lucky_numbers.join(', ')}</span>
+                            </li>
+                            <li class="separator"></li>
+                            <li class="good-match">
+                                <strong>❤️ Совместимость:</strong>
+                                <div class="links-wrapper">
+                                    {bestMatches.map((link, index) => (
+                                        <>
+                                            <a href={link.href} class="zodiac-link good">{link.name}</a>
+                                            {index < bestMatches.length - 1 && ", "}
+                                        </>
+                                    ))}
+                                </div>
+                            </li>
+                            <li class="bad-match">
+                                <strong>⚠️ Сложно с:</strong>
+                                <div class="links-wrapper">
+                                    {worstMatches.map((link, index) => (
+                                        <>
+                                            <a href={link.href} class="zodiac-link bad">{link.name}</a>
+                                            {index < worstMatches.length - 1 && ", "}
+                                        </>
+                                    ))}
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+    <Footer/>
+</MainLayout>

@@ -1,0 +1,102 @@
+.zodiac-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Текст шире, сайдбар уже */
+    gap: 40px;
+}
+
+.fact-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 25px;
+    border-radius: 16px;
+}
+
+.fact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.fact-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    font-size: 0.95rem;
+}
+
+.fact-list .separator {
+    height: 1px;
+    background: var(--gold);
+    width: 100%;
+    padding: 0;
+}
+
+.tag {
+    background: rgba(255,255,255,0.1);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+.zodiac-content p {
+    font-size: .9rem;
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+.zodiac-title {
+    margin-bottom: 15px;
+}
+
+.zodiac-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Текст шире, сайдбар уже */
+    gap: 40px;
+}
+
+.zodiac-single {
+    margin-top: 48px;
+}
+.zodiac-sidebar-sub {
+    margin-bottom: 16px;
+}
+.zodiac-sidebar {
+    border: 1px solid var(--gold);
+}
+
+/* На мобилках делаем одну колонку */
+@media (max-width: 768px) {
+    .zodiac-grid {
+        grid-template-columns: 1fr;
+    }
+    /* Сайдбар ставим наверх или вниз */
+    .zodiac-sidebar {
+        order: -1; /* -1 поднимет его вверх, 1 опустит вниз */
+    }
+}
+
+.fact-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 25px;
+    border-radius: 16px;
+}
+
+.fact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.fact-list strong {
+    opacity: 0.9;
+}
+
+.fact-list span {
+    text-align: right;
+    opacity: 0.7;
+}
+
+.zodiac-link {
+    color: var(--gold);
+    text-decoration: underline;
+}
