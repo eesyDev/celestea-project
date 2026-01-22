@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../../layouts/MainLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+// 1. Astro генерирует пути для всех статей
+export async function getStaticPaths() {
+  const blogEntries = await getCollection('blog');
+  return blogEntries.map(entry => ({
+    params: { slug: entry.slug }, props: { entry },
+  }));
+}
+
+// 2. Получаем данные конкретной статьи
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<MainLayout title={entry.data.title}>
+    <Header/>
+        <article class="prose lg:prose-xl mx-auto py-10 article-content">
+            <div class="container container-sm">
+                <h1>{entry.data.title}</h1>
+                
+                {entry.data.image && <img src={entry.data.image} alt={entry.data.title} class="rounded-lg shadow-md my-6" />}
+                
+                <Content />
+            </div>
+        </article>
+  <Footer/>
+</MainLayout>

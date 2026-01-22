@@ -107,3 +107,50 @@
     color: var(--gold);
     text-decoration: underline;
 }
+.fact-card {
+    padding: 16px;
+}
+.good-match, .bad-match {
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.good-match > *, .bad-match > * {
+    width: 100%;
+}
+
+.card-title {
+    font-size: 1.25rem;
+}
+
+.article-content p {
+    margin: 8px 0;
+}
+.article-content h2 {
+    margin: 32px 0;
+}
+.article-content h3, .article-content h4 {
+    margin: 16px 0;
+}
+
+.article-content img {
+    max-height: 400px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.blog {
+    background-image: url(/assets/img/bg.png);
+    background-repeat: repeat;
+    background-size: 100%;
+    -o-object-fit: cover;
+    object-fit: cover;
+    width: 100%;
+}
+
+.article-content {
+    background-image: url(/assets/img/bg.png);
+}
+
+@media screen and (max-width: 920px) {
+    .header .slide-menu .nav-overlay {}
+}

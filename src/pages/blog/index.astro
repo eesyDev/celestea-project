@@ -1,0 +1,77 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../../layouts/MainLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+// 1. Получаем все статьи из папки content/blog
+const allPosts = await getCollection('blog');
+
+// 2. Сортируем: сначала новые
+const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Функция для красивой даты (на русском)
+function formatDate(date: Date) {
+  return new Intl.DateTimeFormat('ru-RU', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(date);
+}
+---
+
+<MainLayout title="Астро Блог | Celestea">
+    <Header/>
+  <main class="mx-auto px-4 py-12 blog">
+    <div class="container">
+        <h1 class="text-4xl font-bold text-center mb-4">Астро Блог</h1>
+        <p class="text-center text-gray-600 mb-12 text-lg">
+        Точечные разборы вашей натальной карты и психологии
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+        {sortedPosts.map((post) => (
+            <article class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-purple-100 flex flex-col h-full">
+            
+            {/* Ссылка-обертка на всю карточку */}
+            <a href={`/blog/${post.slug}`} class="flex flex-col h-full">
+                
+                {/* Картинка */}
+                {post.data.image && (
+                <div class="h-48 overflow-hidden">
+                    <img 
+                    src={post.data.image} 
+                    alt={post.data.title} 
+                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                    />
+                </div>
+                )}
+
+                {/* Контент карточки */}
+                <div class="p-6 flex flex-col flex-grow">
+                <div class="text-sm text-purple-600 mb-2 font-medium">
+                    {post.data.tags?.map(tag => `#${tag} `)}
+                </div>
+                
+                <h2 class="text-xl font-bold mb-3 text-gray-800 leading-tight card-title mb-2">
+                    {post.data.title}
+                </h2>
+                
+                <div class="text-gray-600 text-sm mt-2 mb-4 line-clamp-3 flex-grow">
+                    {post.data.description}
+                </div>
+                
+                <div class="text-xs text-gray-400 mt-auto pt-4 border-t border-gray-100 flex justify-between items-center">
+                    <span>{formatDate(post.data.pubDate)}</span>
+                    <span class="text-purple-500 font-semibold group-hover:underline">Читать →</span>
+                </div>
+                </div>
+            </a>
+
+            </article>
+        ))}
+        </div>
+    </div>
+  </main>
+  <Footer/>
+</MainLayout>
