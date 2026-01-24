@@ -5,6 +5,7 @@ pubDate: 2026-01-20
 image: "/assets/img/blog/moon-relax.jpg"
 tags: ["астрология", "психология", "луна"]
 slug: "moon-relaxation"
+category: "horoscope"
 ---
 
 ## Почему вы не можете отдохнуть: Как расслабить свою Луну (Полный Гайд)

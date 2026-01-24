@@ -12,7 +12,6 @@ export async function getStaticPaths() {
   }));
 }
 
-// 2. Получаем данные конкретной статьи
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 ---
@@ -22,7 +21,6 @@ const { Content } = await entry.render();
         <article class="prose lg:prose-xl mx-auto py-10 article-content">
             <div class="container container-sm">
                 <h1>{entry.data.title}</h1>
-                
                 {entry.data.image && <img src={entry.data.image} alt={entry.data.title} class="rounded-lg shadow-md my-6" />}
                 
                 <Content />
