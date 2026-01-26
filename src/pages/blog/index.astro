@@ -9,13 +9,6 @@ const allPosts = await getCollection('blog');
 
 const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-// function formatDate(date: Date) {
-//   return new Intl.DateTimeFormat('ru-RU', {
-//     day: 'numeric',
-//     month: 'long',
-//     year: 'numeric',
-//   }).format(date);
-// }
 ---
 
 <MainLayout title="Астро Блог | Celestea">
@@ -30,6 +23,9 @@ const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pu
             <a href="/category/horoscope" class="px-4 py-2 rounded-full text-purple-800 hover:bg-purple-200 transition">
                 Зодиаки
             </a>
+            <a href="/category/myths" class="px-4 py-2 rounded-full text-purple-800 hover:bg-purple-200 transition">
+              Мифология
+          </a>
             <a href="/category/money" class="px-4 py-2 rounded-full text-green-800 hover:bg-green-200 transition">
               Деньги
             </a>
