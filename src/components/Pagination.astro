@@ -1,0 +1,38 @@
+---
+const { page } = Astro.props;
+---
+
+<nav class="flex justify-center space-x-2 mt-12" aria-label="Pagination">
+  {page.url.prev ? (
+    <a
+      href={page.url.prev}
+      class="px-4 py-2 bg-white border border-purple-200 rounded-lg text-purple-700 hover:bg-purple-50 transition-colors duration-200"
+    >
+      &larr; Назад
+    </a>
+  ) : (
+    <span class="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-400 cursor-not-allowed">
+      &larr; Назад
+    </span>
+  )}
+
+  <div class="hidden sm:flex items-center space-x-2">
+    {/* Simple page indicators could be added here if needed */}
+    <span class="px-4 py-2 bg-purple-600 text-white rounded-lg">
+      Страница {page.currentPage} из {page.lastPage}
+    </span>
+  </div>
+
+  {page.url.next ? (
+    <a
+      href={page.url.next}
+      class="px-4 py-2 bg-white border border-purple-200 rounded-lg text-purple-700 hover:bg-purple-50 transition-colors duration-200"
+    >
+      Вперед &rarr;
+    </a>
+  ) : (
+    <span class="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-400 cursor-not-allowed">
+      Вперед &rarr;
+    </span>
+  )}
+</nav>
