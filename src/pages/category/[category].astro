@@ -1,4 +1,15 @@
 ---
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  const uniqueCategories = [...new Set(allPosts.map((post) => post.data.category))].filter(Boolean);
+
+  return uniqueCategories.map((category) => ({
+    params: { category },
+  }));
+}
+
 const { category } = Astro.params;
 return Astro.redirect(`/category/${category}/1`);
 ---
