@@ -18,7 +18,7 @@ const { page } = Astro.props;
 const uniqueCategories = [...new Set((await getCollection('blog')).map((post) => post.data.category))].filter(Boolean);
 ---
 
-<MainLayout title={`Астро Блог - Страница ${page.currentPage} | Celestea`}>
+<MainLayout title={`Астро Блог - Страница ${page.currentPage} | Celestea`} description="Статьи об астрологии, натальных картах, планетах и знаках зодиака. Практические разборы и прогнозы.">
     <Header/>
   <main class="mx-auto px-4 py-12 blog">
     <div class="container">

@@ -1,0 +1,75 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<MainLayout title="Автор — Астрея | Celestea" description="Астрея — астролог-практик, автор проекта Celestea. Натальная карта, транзиты, кармическая астрология. Более 8 лет практики.">
+    <Header />
+    <main class="static-page">
+        <div class="container container-sm">
+            <article class="content author-page">
+                <div class="author-hero">
+                    <div class="author-avatar">
+                        <img src="/assets/img/virgin.png" alt="Астрея — автор Celestea" class="author-avatar__img" />
+                    </div>
+                    <div class="author-intro">
+                        <h1 class="h2">Астрея</h1>
+                        <p class="author-subtitle">Астролог-практик, автор проекта Celestea</p>
+                    </div>
+                </div>
+
+                <h3 class="h5 mt-20">Мой путь</h3>
+                <p class="mt-20">Меня зовут Астрея — и да, это псевдоним. Имя богини справедливости, которая, по легенде, последней из божеств покинула Землю и стала созвездием Девы. Мне нравится думать, что она всё ещё наблюдает за нами оттуда.</p>
+                <p class="mt-20">Моё знакомство с астрологией началось банально — с попытки разобраться, почему я совершенно не похожа на описание своего солнечного знака. Натальная карта открыла мне целый мир, и с тех пор я не могу перестать его исследовать. Уже более 8 лет я строю карты, читаю транзиты и наблюдаю, как космические циклы отражаются в реальных судьбах.</p>
+
+                <h3 class="h5 mt-20">Специализация</h3>
+                <ul class="mt-20">
+                    <li><strong>Натальная карта</strong> — разбор личности, талантов и теневых сторон через призму планет и домов.</li>
+                    <li><strong>Транзиты и прогнозы</strong> — как текущие положения планет влияют на вашу жизнь и когда ждать ключевых событий.</li>
+                    <li><strong>Кармическая астрология</strong> — работа с Лунными узлами, Лилит и ретроградными планетами. Поиск кармических уроков и эволюционного вектора души.</li>
+                </ul>
+
+                <h3 class="h5 mt-20">Философия</h3>
+                <p class="mt-20">Я не верю в фатальность. Карта — это не приговор, а навигатор. Она показывает потенциал и подводные камни, но руль всегда в ваших руках. Мне важно, чтобы астрология помогала людям принимать решения осознанно, а не пугала их «ретроградным Меркурием».</p>
+                <p class="mt-20">Ещё я убеждена: хороший астролог не тот, кто говорит загадками, а тот, кто объясняет сложное простым языком. Поэтому на Celestea вы не найдёте академической зауми — только живой язык и практический смысл.</p>
+
+                <h3 class="h5 mt-20">Связь</h3>
+                <p class="mt-20">Если у вас есть вопросы или вы хотите обсудить свою карту — пишите мне в <a href="https://t.me/celestea_astro" class="hovered" target="_blank" rel="noopener">Telegram</a>. Там же я делюсь короткими астро-заметками и анонсами новых статей.</p>
+            </article>
+        </div>
+    </main>
+    <Footer />
+</MainLayout>
+
+<style>
+    .author-hero {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 16px;
+    }
+    .author-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+        border: 2px solid rgba(255, 255, 255, 0.15);
+    }
+    .author-avatar__img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .author-subtitle {
+        opacity: 0.7;
+        margin-top: 4px;
+    }
+    @media (max-width: 480px) {
+        .author-hero {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>
