@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://celestea.space/sitemap-index.xml
+Host: https://celestea.xyz
+Sitemap: https://celestea.xyz/sitemap-index.xml
