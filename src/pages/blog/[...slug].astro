@@ -24,7 +24,13 @@ const relatedPosts = allPosts
   .slice(0, 3);
 ---
 
-<MainLayout title={`${entry.data.title} | Celestea`} description={entry.data.description}>
+<MainLayout
+    title={`${entry.data.title} | Celestea`}
+    description={entry.data.description}
+    image={entry.data.image}
+    type="article"
+    pubDate={new Date(entry.data.pubDate)}
+>
     <Header/>
         <article class="prose lg:prose-xl mx-auto py-10 article-content">
             <div class="container container-sm">
