@@ -2,6 +2,8 @@
 import MainLayout from '../../layouts/MainLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
 import zodiacs from '../../data/zodiacs.json';
 
   export async function getStaticPaths() {
@@ -36,6 +38,32 @@ const getSignLinks = (str) => {
 const bestMatches = getSignLinks(signData.details.best_match);
 const worstMatches = getSignLinks(signData.details.worst_match);
 
+// Related posts: match by sign name, element or ruling planet in tags
+const allPosts = await getCollection('blog');
+const keywords = [
+  signData.name,
+  signData.element,
+  signData.details.ruling_planet,
+].map(k => k.toLowerCase());
+
+const relatedPosts = allPosts
+  .filter(post => {
+    const tags = (post.data.tags ?? []).map(t => t.toLowerCase());
+    return tags.some(tag => keywords.some(kw => tag.includes(kw)));
+  })
+  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime())
+  .slice(0, 3);
+
+// Fallback: fill up to 3 with recent karma/planets posts not already included
+if (relatedPosts.length < 3) {
+  const relatedSlugs = new Set(relatedPosts.map(p => p.slug));
+  const fallback = allPosts
+    .filter(p => !relatedSlugs.has(p.slug) && ['karma', 'planets', 'horoscope'].includes(p.data.category))
+    .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime())
+    .slice(0, 3 - relatedPosts.length);
+  relatedPosts.push(...fallback);
+}
+
 ---
 <MainLayout title={signData.seo_title} description={signData.seo_desc}>
     <Header />
@@ -52,8 +80,8 @@ const worstMatches = getSignLinks(signData.details.worst_match);
                 <p style="font-size: 1.2rem; opacity: 0.7; margin-top: 10px;">{signData.dates}</p>
                 
                 <div class="tags" style="display: flex; justify-content: center; gap: 15px; margin-top: 20px;">
-                    <span class="tag">Element: {signData.element}</span>
-                    <span class="tag">Planet: {signData.planet}</span>
+                    <span class="tag">Стихия: {signData.element}</span>
+                    <span class="tag">Планета: {signData.planet}</span>
                 </div>
             </div>
             <div class="zodiac-grid">
@@ -139,5 +167,19 @@ const worstMatches = getSignLinks(signData.details.worst_match);
             </div>
         </div>
     </main>
+
+    {relatedPosts.length > 0 && (
+      <section class="py-10">
+        <div class="container">
+          <h2 class="text-2xl font-bold text-center mb-8">Статьи для {signData.name}</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+            {relatedPosts.map(post => (
+              <PostCard post={post} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
     <Footer/>
 </MainLayout>

@@ -1,0 +1,383 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<MainLayout
+  title="Матрица судьбы онлайн — расчёт по дате рождения | Celestea"
+  description="Бесплатный расчёт матрицы судьбы по дате рождения. Узнайте свой жизненный код, предназначение и кармические программы через язык 22 арканов Таро."
+>
+  <Header />
+
+  <main class="py-12">
+    <div class="container">
+
+      <!-- Hero -->
+      <div class="max-w-2xl mx-auto text-center mb-10">
+        <h1 class="h1 mb-4">Матрица Судьбы</h1>
+        <p class="text-gray-600 text-lg leading-relaxed">
+          Введите дату рождения — и система рассчитает вашу персональную матрицу.
+          Каждая из 9 позиций раскроется через язык 22 арканов Таро: личная энергия,
+          предназначение, деньги, любовь, кармические задачи рода.
+        </p>
+      </div>
+
+      <!-- Form -->
+      <div class="max-w-sm mx-auto bg-white rounded-2xl shadow-lg p-8 mb-12">
+        <form id="matrix-form" class="flex flex-col gap-5">
+          <label class="flex flex-col gap-2">
+            <span class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Дата рождения</span>
+            <input
+              type="date"
+              id="birthdate"
+              class="border border-purple-200 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-purple-400"
+              required
+            />
+          </label>
+          <button
+            type="submit"
+            class="bg-purple-700 hover:bg-purple-800 text-white rounded-xl py-3 font-semibold transition-colors"
+          >
+            Рассчитать матрицу
+          </button>
+        </form>
+      </div>
+
+      <!-- Result -->
+      <div id="result" class="hidden">
+
+        <!-- Date display -->
+        <p id="date-display" class="text-center text-gray-500 mb-8 text-sm"></p>
+
+        <!-- SVG Matrix -->
+        <div class="flex justify-center mb-14">
+          <div class="relative inline-block">
+            <svg
+              id="matrix-svg"
+              viewBox="0 0 500 500"
+              width="480"
+              height="480"
+              class="max-w-full"
+              style="filter: drop-shadow(0 4px 24px rgba(126,34,206,0.15));"
+            ></svg>
+            <!-- Tooltip -->
+            <div id="matrix-tooltip"
+              class="hidden absolute z-50 pointer-events-none bg-white rounded-2xl shadow-xl border border-purple-200 p-4 w-72"
+              style="top: 0; left: 0;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="max-w-2xl mx-auto mb-4 bg-purple-50 rounded-2xl p-6">
+          <h2 class="text-lg font-bold text-purple-900 mb-12 text-center">Позиции матрицы</h2>
+          <div id="legend-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm"></div>
+        </div>
+
+        <!-- Hint -->
+        <!-- <p class="text-center text-sm text-purple-400 mb-8 italic">Наведите на кружок — увидите что означает позиция. Подробные интерпретации — ниже ↓</p> -->
+
+        <!-- Interpretation cards -->
+        <h2 class="text-xl font-bold text-purple-900 mb-8  text-center">Расшифровка вашей матрицы</h2>
+        <div id="cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 mt-12"></div>
+
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</MainLayout>
+
+<script>
+import { INTERPRETATIONS, ARCANA_ADVICE } from '../scripts/matrix-interpretations.js';
+
+// ─── Arcana data ───────────────────────────────────────────────────────────────
+const ARCANA = {
+  1:  { name: "Маг",               key: "Воля",          color: "#7c3aed",
+        desc: "Вы обладаете всеми инструментами для создания своей реальности. Сила Мага — в концентрации: когда воля и действие совпадают, результат неизбежен. Риск — распыляться, не доводя начатое до конца." },
+  2:  { name: "Жрица",             key: "Интуиция",      color: "#6d28d9",
+        desc: "Знание приходит изнутри, а не снаружи. Жрица умеет ждать и слышать тихий голос в тишине. Ваш главный ресурс — умение доверять своему внутреннему компасу, особенно когда логика молчит." },
+  3:  { name: "Императрица",       key: "Изобилие",      color: "#7e22ce",
+        desc: "Энергия роста, плодородия и чувственного мира. Всё, что вы питаете вниманием и любовью — расцветает. Здесь живёт ваш творческий потенциал и способность создавать красоту из ничего." },
+  4:  { name: "Император",         key: "Структура",     color: "#6b21a8",
+        desc: "Сила в системе, дисциплине и ответственности. Вы строитель — правил, традиций, фундамента. Там, где есть порядок, Император расцветает; хаос его разрушает изнутри." },
+  5:  { name: "Иерофант",          key: "Передача",      color: "#581c87",
+        desc: "Вы проводник между мирами — знания ищут выхода через вас. Традиция, наставничество и духовный авторитет. Ваша задача — не только получить мудрость, но и передать её дальше." },
+  6:  { name: "Влюблённые",        key: "Выбор",         color: "#7c3aed",
+        desc: "Жизнь ставит перед развилками, и каждый выбор формирует судьбу. Здесь — тема союзов, ценностей и того, чему вы отдаёте сердце. Правильный выбор требует честности с собой." },
+  7:  { name: "Колесница",         key: "Победа",        color: "#6d28d9",
+        desc: "Движение вперёд через силу воли и контроль над противоречиями. Колесница побеждает не скоростью, а направленностью. Ваш путь — научиться управлять внутренними противоречиями." },
+  8:  { name: "Сила",              key: "Укрощение",     color: "#7e22ce",
+        desc: "Настоящая сила — не в принуждении, а в мягком принятии. Вы умеете (или должны научиться) усмирять хаос через внутреннее спокойствие, а не через давление." },
+  9:  { name: "Отшельник",         key: "Мудрость",      color: "#6b21a8",
+        desc: "Путь вглубь себя. Одиночество — не изоляция, а условие для настоящего знания. В тишине вы находите ответы, недоступные в шуме толпы. Ваш свет — для тех, кто ищет." },
+  10: { name: "Колесо Фортуны",    key: "Циклы",         color: "#581c87",
+        desc: "Жизнь движется по спирали — что падает, поднимается; что поднялось, однажды изменится. Ваш дар — видеть закономерность там, где другие видят хаос, и доверять процессу." },
+  11: { name: "Справедливость",    key: "Баланс",        color: "#7c3aed",
+        desc: "Вселенная честна: каждое действие возвращается. Ваш путь строится на честности, ответственности и умении принимать справедливые решения — даже когда это больно." },
+  12: { name: "Повешенный",        key: "Пауза",         color: "#6d28d9",
+        desc: "Остановиться — значит увидеть мир иначе. Это аркан жертвы ради высшего, смены угла зрения и добровольного отпускания. Ваш рост происходит в паузах, а не в движении." },
+  13: { name: "Трансформация",     key: "Обновление",    color: "#7e22ce",
+        desc: "Не конец, а перерождение. Всё, что завершается — освобождает место новому. Ваш путь связан с умением отпускать старое без страха и принимать трансформацию как естественный процесс." },
+  14: { name: "Умеренность",       key: "Синтез",        color: "#6b21a8",
+        desc: "Алхимия жизни — в умении совмещать несовместимое и находить золотую середину. Ваш дар — терпение и способность интегрировать противоположности в единое гармоничное целое." },
+  15: { name: "Дьявол",            key: "Осознание",     color: "#581c87",
+        desc: "Здесь живут ваши привязанности и иллюзии свободы. Это аркан цепей, которые мы надеваем сами. Осознать их — значит освободиться. Ваш главный ресурс спрятан в главной ловушке." },
+  16: { name: "Башня",             key: "Прорыв",        color: "#7c3aed",
+        desc: "Кризисы, которые разрушают, — разрушают только ложное. Башня падает, чтобы построилось настоящее. Ваши самые сильные прорывы выглядят сначала как катастрофа." },
+  17: { name: "Звезда",            key: "Надежда",       color: "#6d28d9",
+        desc: "Вдохновение, исцеление и вера в лучшее. Вы несёте свет туда, где темно — иногда не осознавая этого. Ваш путь связан с восстановлением, красотой и тихой уверенностью." },
+  18: { name: "Луна",              key: "Глубина",       color: "#7e22ce",
+        desc: "Подсознание, иллюзии и тёмная вода внутреннего мира. Самые сильные дары Луны спрятаны за самыми глубокими страхами. Не бойтесь нырять — там ваши настоящие сокровища." },
+  19: { name: "Солнце",            key: "Радость",       color: "#d97706",
+        desc: "Чистая жизненная сила, успех и способность освещать всё вокруг. Там, где стоит Солнце, — расцветает. Эта энергия не требует усилий, она просто есть. Позвольте себе сиять." },
+  20: { name: "Суд",               key: "Призвание",     color: "#6b21a8",
+        desc: "Вас зовут — из глубины, из прошлого, из будущего. Это аркан пробуждения и ответа на вопрос «зачем я здесь». Ваша задача — услышать этот зов и откликнуться без страха." },
+  21: { name: "Мир",               key: "Завершённость", color: "#059669",
+        desc: "Высшая точка цикла — интеграция, полнота, успех. Вы несёте в себе опыт всего пути. Там, где стоит Мир — достигается настоящая завершённость и открывается следующий горизонт." },
+  22: { name: "Шут",               key: "Начало",        color: "#7c3aed",
+        desc: "Нуль — это не пустота, это бесконечные возможности. Шут прыгает без страха, доверяя жизни. Эта энергия несёт в себе всё и ничего — чистый потенциал на пороге нового." },
+};
+
+// ─── Position definitions ──────────────────────────────────────────────────────
+const POSITIONS = {
+  A:      { label: "Личная энергия",       letter: "А", theme: "Ваш главный энергетический код — с чем вы пришли в мир. Это сырая сила личности, ваш базовый ресурс." },
+  B:      { label: "Планетарная энергия",  letter: "Б", theme: "Как вы взаимодействуете с обществом и внешним миром. Ваш способ влиять на реальность снаружи." },
+  C:      { label: "Родовая программа",    letter: "В", theme: "Энергия, унаследованная от рода. Ресурсы и ограничения, переданные через предков." },
+  D:      { label: "Высшее предназначение",letter: "Г", theme: "Интегральная задача жизни — куда ведут личная, планетарная и родовая энергии вместе." },
+  E:      { label: "Зона комфорта",        letter: "Д", theme: "Ваши отношения с самим собой: где вам легко, где вы прячетесь от роста." },
+  F:      { label: "Деньги и ресурсы",     letter: "Е", theme: "Программа взаимодействия с материальным миром: деньги, достаток, ресурсы." },
+  G:      { label: "Кармический хвост рода",letter:"Ж", theme: "Непроработанные паттерны предков, которые вы несёте и можете трансформировать." },
+  H:      { label: "Любовь и партнёрство", letter: "З", theme: "Ваша программа в сфере любви, союзов и близости." },
+  CENTER: { label: "Ядро матрицы",         letter: "Ц", theme: "Главный урок жизни. Центральная тема, пронизывающая все остальные сферы матрицы." },
+};
+
+// ─── SVG layout ────────────────────────────────────────────────────────────────
+const COORDS = {
+  A:      { x: 250, y: 50  },
+  B:      { x: 450, y: 250 },
+  C:      { x: 250, y: 450 },
+  D:      { x: 50,  y: 250 },
+  E:      { x: 350, y: 150 },
+  F:      { x: 350, y: 350 },
+  G:      { x: 150, y: 350 },
+  H:      { x: 150, y: 150 },
+  CENTER: { x: 250, y: 250 },
+};
+
+const LINES = [
+  ['A','B'],['B','C'],['C','D'],['D','A'],
+  ['E','F'],['F','G'],['G','H'],['H','E'],
+  ['A','CENTER'],['B','CENTER'],['C','CENTER'],['D','CENTER'],
+  ['E','CENTER'],['F','CENTER'],['G','CENTER'],['H','CENTER'],
+];
+
+const POS_LABELS = {
+  A: { text: "Небо",    dy: -40 },
+  B: { text: "Восток",  dx: 44  },
+  C: { text: "Земля",   dy: 44  },
+  D: { text: "Запад",   dx: -44 },
+};
+
+// ─── Helpers ───────────────────────────────────────────────────────────────────
+function reduce(n) {
+  if (n <= 0) return 22;
+  if (n <= 22) return n;
+  const s = String(n).split('').reduce((a, b) => a + Number(b), 0);
+  return reduce(s);
+}
+
+function calcMatrix(day, month, year) {
+  const yearSum = String(year).split('').reduce((a, b) => a + Number(b), 0);
+  const A = reduce(day);
+  const B = reduce(month);
+  const C = reduce(yearSum);
+  const D = reduce(A + B + C);
+  const E = reduce(A + B);
+  const F = reduce(B + C);
+  const G = reduce(C + D);
+  const H = reduce(D + A);
+  const CENTER = reduce(A + B + C + D);
+  return { A, B, C, D, E, F, G, H, CENTER };
+}
+
+// ─── SVG render ────────────────────────────────────────────────────────────────
+function renderSVG(matrix) {
+  const svg = document.getElementById('matrix-svg');
+
+  // Background
+  let out = `
+    <defs>
+      <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#faf5ff"/>
+        <stop offset="100%" stop-color="#ede9fe"/>
+      </radialGradient>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <rect width="500" height="500" rx="24" fill="url(#bg)"/>
+  `;
+
+  // Lines
+  for (const [a, b] of LINES) {
+    const p = COORDS[a], q = COORDS[b];
+    out += `<line x1="${p.x}" y1="${p.y}" x2="${q.x}" y2="${q.y}" stroke="#c084fc" stroke-width="1.2" opacity="0.45"/>`;
+  }
+
+  // Cardinal labels (Небо / Земля / Восток / Запад)
+  for (const [key, lbl] of Object.entries(POS_LABELS)) {
+    const c = COORDS[key];
+    const x = c.x + (lbl.dx || 0);
+    const y = c.y + (lbl.dy || 0);
+    out += `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" fill="#9333ea" font-size="11" font-family="sans-serif" opacity="0.7">${lbl.text}</text>`;
+  }
+
+  // Nodes
+  for (const [key, coord] of Object.entries(COORDS)) {
+    const num = matrix[key];
+    const arc = ARCANA[num];
+    const isCenter = key === 'CENTER';
+    const r = isCenter ? 34 : 26;
+    const fill = isCenter ? '#6d28d9' : '#9333ea';
+    const stroke = isCenter ? '#c084fc' : '#ddd6fe';
+
+    out += `
+      <g data-key="${key}" class="matrix-node" style="cursor:pointer">
+        <circle cx="${coord.x}" cy="${coord.y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="2.5" filter="url(#glow)"/>
+        <text x="${coord.x}" y="${coord.y - 4}" text-anchor="middle" dominant-baseline="middle"
+          fill="white" font-size="${isCenter ? 17 : 15}" font-weight="bold" font-family="sans-serif" pointer-events="none">${num}</text>
+        <text x="${coord.x}" y="${coord.y + 12}" text-anchor="middle" dominant-baseline="middle"
+          fill="rgba(255,255,255,0.75)" font-size="8" font-family="sans-serif" pointer-events="none">${arc.key}</text>
+      </g>
+    `;
+  }
+
+  svg.innerHTML = out;
+
+  // ── Tooltip logic ───────────────────────────────────────────────────────────
+  const tooltip = document.getElementById('matrix-tooltip');
+  const svgEl = document.getElementById('matrix-svg');
+  const svgContainer = svgEl.parentElement;
+
+  svg.querySelectorAll('.matrix-node').forEach(node => {
+    node.addEventListener('mouseenter', (e) => {
+      const key = node.dataset.key;
+      const pos = POSITIONS[key];
+      const num = matrix[key];
+      const arc = ARCANA[num];
+      tooltip.innerHTML = `
+        <div class="text-xs text-purple-500 uppercase tracking-wide font-semibold mb-1">${pos.letter}. ${pos.label}</div>
+        <div class="font-bold text-gray-800 mb-2">${num} · ${arc.name} · ${arc.key}</div>
+        <div class="text-gray-600 text-xs leading-relaxed">${pos.theme}</div>
+      `;
+      tooltip.classList.remove('hidden');
+      positionTooltip(e);
+    });
+
+    node.addEventListener('mousemove', positionTooltip);
+
+    node.addEventListener('mouseleave', () => {
+      tooltip.classList.add('hidden');
+    });
+  });
+
+  function positionTooltip(e) {
+    const rect = svgContainer.getBoundingClientRect();
+    const svgRect = svgEl.getBoundingClientRect();
+    // Compute position relative to the container
+    let x = e.clientX - rect.left + 12;
+    let y = e.clientY - rect.top - 30;
+
+    // Keep tooltip inside container horizontally
+    const tipW = 288; // w-72 = 18rem = 288px
+    if (x + tipW > rect.width) x = e.clientX - rect.left - tipW - 12;
+    if (y < 0) y = 0;
+
+    tooltip.style.left = x + 'px';
+    tooltip.style.top = y + 'px';
+  }
+}
+
+// ─── Legend ────────────────────────────────────────────────────────────────────
+function renderLegend(matrix) {
+  const grid = document.getElementById('legend-grid');
+  grid.innerHTML = Object.entries(POSITIONS).map(([key, pos]) => {
+    const num = matrix[key];
+    const arc = ARCANA[num];
+    return `
+      <div class="flex items-center gap-2 bg-white rounded-xl px-3 py-2">
+        <span class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+          style="background:${arc.color}">${num}</span>
+        <span class="text-gray-700 text-xs leading-tight">
+          <span class="font-semibold">${pos.label}</span><br/>
+          <span class="text-gray-400">${arc.name}</span>
+        </span>
+      </div>`;
+  }).join('');
+}
+
+// ─── Interpretation cards ──────────────────────────────────────────────────────
+function renderCards(matrix) {
+  const container = document.getElementById('cards');
+  container.innerHTML = Object.entries(POSITIONS).map(([key, pos]) => {
+    const num = matrix[key];
+    const arc = ARCANA[num];
+    const advice = ARCANA_ADVICE[num];
+    const isCenter = key === 'CENTER';
+    return `
+      <div class="bg-white rounded-2xl shadow-md p-6 border ${isCenter ? 'border-purple-400 ring-2 ring-purple-200' : 'border-purple-100'} flex flex-col gap-4">
+        <div class="flex items-center gap-3">
+          <span class="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0"
+            style="background:${arc.color}">${num}</span>
+          <div>
+            <p class="text-xs text-purple-500 uppercase tracking-wide font-semibold">${pos.label}</p>
+            <p class="font-bold text-gray-800">${arc.name} · ${arc.key}</p>
+          </div>
+        </div>
+
+        <p class="text-xs text-gray-400 italic border-l-2 border-purple-200 pl-3">${pos.theme}</p>
+
+        <p class="text-gray-700 text-sm leading-relaxed">${INTERPRETATIONS[key]?.[num] ?? arc.desc}</p>
+
+        ${advice ? `
+        <div class="flex flex-col gap-2 pt-2 border-t border-purple-50">
+          <div class="flex gap-2 items-start">
+            <span class="text-green-500 mt-0.5 flex-shrink-0">✓</span>
+            <div><span class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Что делать</span><p class="text-xs text-gray-600 mt-0.5 leading-relaxed">${advice.do}</p></div>
+          </div>
+          <div class="flex gap-2 items-start">
+            <span class="text-purple-400 mt-0.5 flex-shrink-0">◈</span>
+            <div><span class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Чем заниматься</span><p class="text-xs text-gray-600 mt-0.5 leading-relaxed">${advice.activities}</p></div>
+          </div>
+          <div class="flex gap-2 items-start">
+            <span class="text-red-400 mt-0.5 flex-shrink-0">✕</span>
+            <div><span class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Чего избегать</span><p class="text-xs text-gray-600 mt-0.5 leading-relaxed">${advice.avoid}</p></div>
+          </div>
+        </div>` : ''}
+      </div>`;
+  }).join('');
+}
+
+// ─── Form handler ──────────────────────────────────────────────────────────────
+document.getElementById('matrix-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const raw = document.getElementById('birthdate').value;
+  if (!raw) return;
+
+  const [year, month, day] = raw.split('-').map(Number);
+  const matrix = calcMatrix(day, month, year);
+
+  document.getElementById('date-display').textContent =
+    `Матрица для даты: ${String(day).padStart(2,'0')}.${String(month).padStart(2,'0')}.${year}`;
+
+  renderSVG(matrix);
+  renderLegend(matrix);
+  renderCards(matrix);
+
+  document.getElementById('result').classList.remove('hidden');
+  document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+</script>
