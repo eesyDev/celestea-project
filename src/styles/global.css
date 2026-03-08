@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+:root {
+  --color-purple-600: oklch(0.26 0.11 306.32);
+}
+
 @layer utilities {
   .scrollbar-hide {
     -ms-overflow-style: none; /* IE and Edge */
