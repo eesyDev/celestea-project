@@ -5,6 +5,7 @@ import Footer from '../../components/Footer.astro';
 import PostCard from '../../components/PostCard.astro';
 import { getCollection } from 'astro:content';
 import zodiacs from '../../data/zodiacs.json';
+import compatibilityData from '../../data/compatibility.json';
 
   export async function getStaticPaths() {
   return zodiacs.map((sign) => ({
@@ -64,6 +65,22 @@ if (relatedPosts.length < 3) {
   relatedPosts.push(...fallback);
 }
 
+// Совместимость: все пары для этого знака
+const compatPairs = compatibilityData
+  .filter(d => d.sign1 === signData.slug || d.sign2 === signData.slug)
+  .map(d => {
+    const otherName = d.sign1 === signData.slug ? d.sign2_name : d.sign1_name;
+    return { href: `/compatibility/${d.pair}/`, name: otherName, score: d.score_overall };
+  })
+  .sort((a, b) => b.score - a.score);
+
+const scoreColor = (score: number) => {
+  if (score >= 5) return '#4caf50';
+  if (score >= 4) return '#8bc34a';
+  if (score === 3) return '#ffc107';
+  if (score === 2) return '#ff9800';
+  return '#f44336';
+};
 ---
 <MainLayout title={signData.seo_title} description={signData.seo_desc}>
     <Header />
@@ -167,6 +184,27 @@ if (relatedPosts.length < 3) {
             </div>
         </div>
     </main>
+
+    {compatPairs.length > 0 && (
+      <section class="py-10">
+        <div class="container">
+          <h2 class="text-2xl font-bold text-center mb-8">Совместимость {signData.name} с другими знаками</h2>
+          <div class="compat-zodiac-grid">
+            {compatPairs.map(pair => (
+              <a href={pair.href} class="compat-zodiac-item compat-card">
+                <span class="compat-zodiac-name">{pair.name}</span>
+                <span class="compat-zodiac-score" style={`color:${scoreColor(pair.score)}`}>
+                  {'★'.repeat(pair.score)}{'☆'.repeat(5 - pair.score)}
+                </span>
+              </a>
+            ))}
+          </div>
+          <div style="text-align:center; margin-top: 24px;">
+            <a href="/compatibility/" class="btn btn--outlined">Все пары совместимости</a>
+          </div>
+        </div>
+      </section>
+    )}
 
     {relatedPosts.length > 0 && (
       <section class="py-10">

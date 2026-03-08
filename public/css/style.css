@@ -87,6 +87,92 @@ body {
     }
 }
 
+.compat-table-wrap {
+    overflow-x: auto;
+    margin: 32px 0 48px;
+}
+
+.compat-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.compat-table th,
+.compat-table td {
+    border: 1px solid #a5a5a5;
+    padding: 6px 10px;
+    text-align: center;
+}
+
+.compat-table thead th {
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.compat-table .compat-row-label {
+    text-align: left;
+    font-size: 0.82rem;
+    font-weight: 600;
+    white-space: nowrap;
+    padding-right: 16px;
+}
+
+.compat-table .compat-cell a {
+    display: block;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+}
+
+.compat-table .compat-cell--self {
+    opacity: 0.2;
+    font-size: 0.8rem;
+}
+
+.compat-index {
+    margin: 48px 0;
+}
+
+.compat-grid, .compat-zodiac-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin-top: 48px;
+    border: 1px solid #b8b8b8;
+    padding: 16px;
+}
+.compat-card {
+    width: calc(25% - 25px);
+    display: flex;
+    flex-direction: column;
+}
+.compat-page {
+    margin: 48px 0;
+}
+.compat-hero {
+    display: flex;
+    gap: 8px;
+    text-align: center;
+}
+.compat-title {
+    margin-top: 24px;
+}
+.compat-details section {
+    margin-top: 24px;
+}
+
+@media screen and (max-width: 1024px) {
+    .compat-card {
+        width: calc(50% - 15px);
+        display: flex;
+        flex-direction: column;
+    }
+}
+
 .pattern-top-image {
     background-image: url(/assets/img/bg.png);
     background-repeat: repeat-y;
@@ -216,12 +302,13 @@ p .paragraph {
     display: flex;
     gap: 24px;
     justify-content: center;
-    margin-top: 24px
+    margin-top: 24px;
+    bottom: 30px !important;
 }
 
 .swiper-pagination .swiper-pagination-bullet {
-    width: 30px;
-    height: 30px;
+    width: 20px;
+    height: 20px;
     border-radius: 0
 }
 
@@ -1069,6 +1156,16 @@ p .paragraph {
     align-items: center;
     background-size: cover
 }
+.moon-today {
+    background-color: var(--dark-blue);
+    background-image: url(/assets/img/bg-dark-1.png);
+    height: 600px;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    background-size: cover;
+    background-blend-mode: soft-light;
+}
 
 .subscribe .heading {
     max-width: 832px;
@@ -1213,6 +1310,10 @@ p .paragraph {
 }
 
 @media screen and (max-width:1200px) {
+
+    .moon-today {
+        height: auto;
+    }
     .footer {
         padding: 60px 0 40px
     }

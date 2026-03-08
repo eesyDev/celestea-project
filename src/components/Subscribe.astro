@@ -1,14 +1,154 @@
-<section class="subscribe">
+<section class="moon-today">
     <div class="container">
-        <div class="heading">
-            <p class="pre-title">загляни в будущее</p>
-            <h2 class="h1">Подпишись на рассылку</h2>
+        <div class="heading text-center">
+            <p class="pre-title">небесный календарь</p>
+            <h2 class="h1">Фаза Луны сегодня</h2>
         </div>
-        <div class="subscribe__wrapper">
-            <form action="">
-                <input type="text" class="input" placeholder="E-mail">
-                <button class="btn btn--primary">Отправить</button>
-            </form>
+        <div class="moon-today__wrapper">
+            <div class="moon-today__info">
+                <h4 class="moon-today__phase" id="moonPhase">—</h4>
+                <p class="moon-today__advice" id="moonAdvice"></p>
+                <div class="moon-today__stats">
+                    <div class="moon-today__stat">
+                        <span class="moon-today__stat-label">Лунный день</span>
+                        <span class="moon-today__stat-value" id="moonDayNum">—</span>
+                    </div>
+                    <div class="moon-today__stat">
+                        <span class="moon-today__stat-label">Цикл</span>
+                        <span class="moon-today__stat-value" id="moonPercent">—</span>
+                    </div>
+                    <div class="moon-today__stat">
+                        <span class="moon-today__stat-label">Знак Луны</span>
+                        <span class="moon-today__stat-value" id="moonSign">—</span>
+                    </div>
+                </div>
+                <a href="/category/rituals/1" class="btn btn--primary">Лунные ритуалы</a>
+            </div>
+            <div class="moon-today__visual">
+                <span class="moon-today__emoji" id="moonEmoji">🌑</span>
+                <span class="moon-today__day" id="moonDay"></span>
+            </div>
         </div>
     </div>
 </section>
+
+<style>
+.moon-today { padding: 80px 0; }
+.moon-today__wrapper {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    margin: 48px auto 0;
+    max-width: 60%;
+}
+.moon-today__visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+.moon-today__emoji {
+    font-size: 120px;
+    line-height: 1;
+    filter: drop-shadow(0 0 30px rgba(200,180,255,0.4));
+}
+.moon-today__day {
+    font-size: 0.9rem;
+    opacity: 0.5;
+    text-align: center;
+}
+.moon-today__phase {
+    font-size: 2rem;
+    margin-bottom: 16px;
+}
+.moon-today__advice {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    opacity: 0.8;
+    margin-bottom: 32px;
+    max-width: 520px;
+}
+.moon-today__stats {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 32px;
+}
+.moon-today__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.moon-today__stat-label {
+    font-size: 0.8rem;
+    opacity: 0.5;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.moon-today__stat-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+@media (max-width: 1024px) {
+    .moon-today__wrapper {
+        max-width: 80%;
+    }
+}
+@media (max-width: 768px) {
+    .moon-today__wrapper { flex-direction: column-reverse; gap: 32px; text-align: center; max-width: 100%; }
+    .moon-today__stats { justify-content: center; }
+    .moon-today__advice { max-width: 100%; }
+}
+</style>
+
+<script>
+(function() {
+    const KNOWN_NEW_MOON = new Date('2000-01-06T18:14:00Z').getTime();
+    const SYNODIC = 29.53058867 * 24 * 60 * 60 * 1000;
+
+    const MOON_SIGNS = [
+        'Козерог','Водолей','Рыбы','Овен','Телец','Близнецы',
+        'Рак','Лев','Дева','Весы','Скорпион','Стрелец'
+    ];
+
+    const PHASES = [
+        { max: 1.85,  emoji: '🌑', name: 'Новолуние',        advice: 'Время новых намерений. Загадайте желание, запустите проект, посейте семена будущего. Луна обнуляется — и вы можете тоже.' },
+        { max: 7.38,  emoji: '🌒', name: 'Растущий серп',    advice: 'Луна набирает силу. Начинайте то, что хотите развить: переговоры, знакомства, обучение. Всё посеянное сейчас будет расти.' },
+        { max: 9.22,  emoji: '🌓', name: 'Первая четверть',  advice: 'Луна в точке роста. Могут возникнуть первые препятствия — это проверка намерений. Действуйте решительно, не отступайте.' },
+        { max: 14.77, emoji: '🌔', name: 'Прибывающая Луна', advice: 'Энергия нарастает. Хорошее время для активных действий, расширения, публичности. Тело полно сил — используйте это.' },
+        { max: 16.61, emoji: '🌕', name: 'Полнолуние',       advice: 'Пик энергии лунного цикла. Эмоции обострены, всё скрытое выходит на поверхность. Время для ритуалов, благодарности и отпускания.' },
+        { max: 22.15, emoji: '🌖', name: 'Убывающая Луна',   advice: 'Луна убывает — хорошее время завершать, отпускать и подводить итоги. Избавляйтесь от лишнего: вещей, отношений, привычек.' },
+        { max: 23.99, emoji: '🌗', name: 'Последняя четверть', advice: 'Время переосмысления. Что из начатого в этом цикле сработало? Анализируйте, корректируйте планы, готовьтесь к новому циклу.' },
+        { max: 29.53, emoji: '🌘', name: 'Убывающий серп',   advice: 'Луна уходит на покой. Восстанавливайтесь, отдыхайте, медитируйте. Это время тишины перед новым началом.' },
+    ];
+
+    function getMoonData() {
+        const now = Date.now();
+        const elapsed = (now - KNOWN_NEW_MOON) % SYNODIC;
+        const dayInCycle = elapsed / (24 * 60 * 60 * 1000);
+        const lunarDay = Math.floor(dayInCycle) + 1;
+        const percent = Math.round((dayInCycle / 29.53) * 100);
+
+        const phase = PHASES.find(p => dayInCycle < p.max) || PHASES[PHASES.length - 1];
+
+        // Знак луны: грубое приближение через 12 знаков за 29.5 дней
+        const signIndex = Math.floor((dayInCycle / 29.53) * 12) % 12;
+        const sign = MOON_SIGNS[signIndex];
+
+        const today = new Date();
+        const dateStr = today.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+
+        return { phase, lunarDay, percent, sign, dateStr };
+    }
+
+    const { phase, lunarDay, percent, sign, dateStr } = getMoonData();
+
+    document.getElementById('moonEmoji').textContent = phase.emoji;
+    document.getElementById('moonPhase').textContent = phase.name;
+    document.getElementById('moonAdvice').textContent = phase.advice;
+    document.getElementById('moonDayNum').textContent = lunarDay + '-й';
+    document.getElementById('moonPercent').textContent = percent + '%';
+    document.getElementById('moonSign').textContent = sign;
+    document.getElementById('moonDay').textContent = dateStr;
+})();
+</script>
