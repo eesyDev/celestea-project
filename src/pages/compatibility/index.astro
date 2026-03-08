@@ -1,0 +1,96 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import compatibilityData from '../../data/compatibility.json';
+import zodiacs from '../../data/zodiacs.json';
+
+const signs = zodiacs.map(z => z.slug);
+
+const getByPair = (s1: string, s2: string) => {
+  return compatibilityData.find(
+    d => (d.sign1 === s1 && d.sign2 === s2) || (d.sign1 === s2 && d.sign2 === s1)
+  );
+};
+
+const getHref = (s1: string, s2: string) => {
+  const d = getByPair(s1, s2);
+  return d ? `/compatibility/${d.pair}/` : '#';
+};
+
+const getScore = (s1: string, s2: string) => {
+  return getByPair(s1, s2)?.score_overall ?? 0;
+};
+
+const scoreColor = (score: number) => {
+  if (score >= 5) return '#4caf50';
+  if (score >= 4) return '#8bc34a';
+  if (score === 3) return '#ffc107';
+  if (score === 2) return '#ff9800';
+  return '#f44336';
+};
+
+const nameBySlug = Object.fromEntries(zodiacs.map(z => [z.slug, z.name]));
+---
+
+<MainLayout
+  title="Совместимость знаков зодиака — все пары | Celestea"
+  description="Таблица совместимости всех знаков зодиака: любовь, дружба, работа. Выбери свою пару и узнай, насколько вы совместимы."
+>
+  <Header />
+
+  <main class="compat-index">
+    <div class="container">
+      <h1>Совместимость знаков зодиака</h1>
+      <p class="compat-index-lead">Выберите два знака, чтобы узнать подробный разбор совместимости в любви, дружбе и работе.</p>
+
+      <!-- Таблица совместимости -->
+      <div class="compat-table-wrap">
+        <table class="compat-table">
+          <thead>
+            <tr>
+              <th></th>
+              {signs.map(s => (
+                <th title={nameBySlug[s]}>{nameBySlug[s]}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {signs.map(s1 => (
+              <tr>
+                <td class="compat-row-label">{nameBySlug[s1]}</td>
+                {signs.map(s2 => {
+                  if (s1 === s2) return <td class="compat-cell compat-cell--self">—</td>;
+                  const score = getScore(s1, s2);
+                  const href = getHref(s1, s2);
+                  return (
+                    <td class="compat-cell">
+                      <a href={href} style={`background:${scoreColor(score)}`} title={`${nameBySlug[s1]} + ${nameBySlug[s2]}: ${score}/5`}>
+                        {score}
+                      </a>
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Список всех пар -->
+      <h2 class="compat-all-title">Все пары знаков зодиака</h2>
+      <div class="compat-grid">
+        {compatibilityData.map(item => (
+          <a href={`/compatibility/${item.pair}/`} class="compat-card">
+            <span class="compat-card-names">{item.sign1_name} + {item.sign2_name}</span>
+            <span class="compat-card-score" style={`color:${scoreColor(item.score_overall)}`}>
+              {'★'.repeat(item.score_overall)}{'☆'.repeat(5 - item.score_overall)}
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</MainLayout>

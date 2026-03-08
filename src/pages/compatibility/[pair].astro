@@ -1,0 +1,142 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import compatibilityData from '../../data/compatibility.json';
+import zodiacs from '../../data/zodiacs.json';
+
+export async function getStaticPaths() {
+  const paths = [];
+
+  for (const item of compatibilityData) {
+    // Canonical path: sign1-sign2
+    paths.push({
+      params: { pair: item.pair },
+      props: { data: item, canonical: true },
+    });
+    // Reverse path: sign2-sign1 → same data
+    const reversePair = `${item.sign2}-${item.sign1}`;
+    paths.push({
+      params: { pair: reversePair },
+      props: { data: item, canonical: false },
+    });
+  }
+
+  return paths;
+}
+
+const { data, canonical } = Astro.props;
+
+// Если зашли по реверсному URL — редиректим на канонический
+if (!canonical) {
+  return Astro.redirect(`/compatibility/${data.pair}/`, 301);
+}
+
+const sign1 = zodiacs.find(z => z.slug === data.sign1);
+const sign2 = zodiacs.find(z => z.slug === data.sign2);
+
+const getImageName = (slug: string) => {
+  const map: Record<string, string> = { virgo: 'virgin', sagittarius: 'saggitarius', pisces: 'pieces' };
+  return map[slug] || slug;
+};
+
+const renderStars = (score: number) => '★'.repeat(score) + '☆'.repeat(5 - score);
+---
+
+<MainLayout title={data.seo_title} description={data.seo_desc}>
+  <Header />
+
+  <main class="compat-page">
+    <div class="container">
+
+      <!-- Hero: два знака -->
+      <div class="compat-hero">
+        <a href={`/zodiac/${data.sign1}/`} class="compat-sign">
+          <img
+            src={`/assets/img/${getImageName(data.sign1)}.png`}
+            srcset={`/assets/img/${getImageName(data.sign1)}_2x.png 2x`}
+            alt={data.sign1_name}
+            width="100" height="100"
+          />
+          <span>{data.sign1_name}</span>
+        </a>
+
+        <div class="compat-heart">♥</div>
+
+        <a href={`/zodiac/${data.sign2}/`} class="compat-sign">
+          <img
+            src={`/assets/img/${getImageName(data.sign2)}.png`}
+            srcset={`/assets/img/${getImageName(data.sign2)}_2x.png 2x`}
+            alt={data.sign2_name}
+            width="100" height="100"
+          />
+          <span>{data.sign2_name}</span>
+        </a>
+      </div>
+
+      <h1 class="compat-title">Совместимость {data.sign1_name} и {data.sign2_name}</h1>
+
+      <p class="compat-summary">{data.summary}</p>
+
+      <!-- Оценки -->
+      <div class="compat-scores">
+        <div class="compat-score-item">
+          <span class="compat-score-label">Любовь</span>
+          <span class="compat-score-stars">{renderStars(data.score_love)}</span>
+          <span class="compat-score-num">{data.score_love}/5</span>
+        </div>
+        <div class="compat-score-item">
+          <span class="compat-score-label">Дружба</span>
+          <span class="compat-score-stars">{renderStars(data.score_friendship)}</span>
+          <span class="compat-score-num">{data.score_friendship}/5</span>
+        </div>
+        <div class="compat-score-item">
+          <span class="compat-score-label">Работа</span>
+          <span class="compat-score-stars">{renderStars(data.score_work)}</span>
+          <span class="compat-score-num">{data.score_work}/5</span>
+        </div>
+        <div class="compat-score-item compat-score-overall">
+          <span class="compat-score-label">Общая</span>
+          <span class="compat-score-stars">{renderStars(data.score_overall)}</span>
+          <span class="compat-score-num">{data.score_overall}/5</span>
+        </div>
+      </div>
+
+      <!-- Детали -->
+      <div class="compat-details">
+        <section class="compat-section">
+          <h2>❤️ Любовь и отношения</h2>
+          <p>{data.love}</p>
+        </section>
+
+        <section class="compat-section">
+          <h2>🤝 Дружба</h2>
+          <p>{data.friendship}</p>
+        </section>
+
+        <section class="compat-section">
+          <h2>💼 Работа и бизнес</h2>
+          <p>{data.work}</p>
+        </section>
+
+        <section class="compat-section compat-tips">
+          <h2>💡 Советы паре</h2>
+          <p>{data.tips}</p>
+        </section>
+      </div>
+
+      <!-- Ссылки на знаки -->
+      <div class="compat-links">
+        <a href={`/zodiac/${data.sign1}/`} class="compat-link-sign">
+          Подробнее о знаке {data.sign1_name} →
+        </a>
+        <a href={`/zodiac/${data.sign2}/`} class="compat-link-sign">
+          Подробнее о знаке {data.sign2_name} →
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <Footer />
+</MainLayout>
