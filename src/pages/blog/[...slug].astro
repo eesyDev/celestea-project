@@ -59,3 +59,89 @@ const relatedPosts = allPosts
 
   <Footer/>
 </MainLayout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const article = document.querySelector('.article-content');
+    if (!article) return;
+
+    // Ищем заголовок FAQ
+    const headings = article.querySelectorAll('h2');
+    let faqHeading = null;
+    for (const h of headings) {
+      if (h.textContent.includes('Часто задаваемые вопросы')) {
+        faqHeading = h;
+        break;
+      }
+    }
+    if (!faqHeading) return;
+
+    // Собираем все элементы до следующего h2 или конца
+    const elements = [];
+    let el = faqHeading.nextElementSibling;
+    while (el && el.tagName !== 'H2') {
+      elements.push(el);
+      el = el.nextElementSibling;
+    }
+
+    // Вопрос — <p>, первый дочерний элемент которого <strong>
+    function isQuestion(el) {
+      return el.tagName === 'P' &&
+        el.children.length > 0 &&
+        el.children[0].tagName === 'STRONG';
+    }
+
+    // Текст ответа, который идёт в той же строке после <strong> (soft line break)
+    function getInlineAnswer(p) {
+      const strong = p.children[0];
+      let text = '';
+      let node = strong.nextSibling;
+      while (node) {
+        text += node.textContent || '';
+        node = node.nextSibling;
+      }
+      return text.trim();
+    }
+
+    const faqContainer = document.createElement('div');
+    faqContainer.className = 'faq-accordion';
+
+    let i = 0;
+    while (i < elements.length) {
+      const current = elements[i];
+
+      if (isQuestion(current)) {
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+        summary.textContent = current.children[0].textContent;
+        details.appendChild(summary);
+
+        const answerDiv = document.createElement('div');
+        answerDiv.className = 'faq-answer';
+
+        // Ответ может быть в той же <p> после <strong> (если нет пустой строки в md)
+        const inlineText = getInlineAnswer(current);
+        if (inlineText) {
+          const p = document.createElement('p');
+          p.textContent = inlineText;
+          answerDiv.appendChild(p);
+        }
+
+        i++;
+        // Собираем следующие элементы как часть ответа до следующего вопроса
+        while (i < elements.length && !isQuestion(elements[i])) {
+          answerDiv.appendChild(elements[i].cloneNode(true));
+          i++;
+        }
+
+        details.appendChild(answerDiv);
+        faqContainer.appendChild(details);
+      } else {
+        i++;
+      }
+    }
+
+    faqHeading.after(faqContainer);
+    elements.forEach(el => el.remove());
+  });
+</script>
