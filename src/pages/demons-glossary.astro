@@ -1,0 +1,113 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { demons, groupByLetter, getLetters } from '../data/demons';
+
+const grouped = groupByLetter(demons);
+const letters = getLetters(demons);
+
+// Все буквы русского алфавита для навигации
+const alphabet = ['А','Б','В','Г','Д','Е','Ж','З','И','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Э','Ю','Я'];
+---
+
+<MainLayout
+  title="Словарь демонов от А до Я — Celestea"
+  description="Алфавитный глоссарий демонов из главных гримуаров: Гоэтия, Псевдомонархия демонов, Инфернальный словарь де Планси. Краткие карточки с чином, сферой и обликом."
+>
+  <Header />
+
+  <main class="py-12">
+    <div class="container">
+
+      <!-- Hero -->
+      <div class="max-w-2xl mx-auto text-center mb-10">
+        <h1 class="h1 mb-4">Словарь демонов</h1>
+        <p class="text-gray-500 text-lg leading-relaxed">
+          Алфавитный указатель сущностей из гримуарной традиции: Гоэтия, Псевдомонархия демонов, Инфернальный словарь де Планси. Словарь пополняется.
+        </p>
+      </div>
+
+      <!-- Alphabet nav -->
+      <div class="sticky top-0 z-10 bg-white/90 backdrop-blur border-b border-purple-100 py-3 mb-10">
+        <div class="flex flex-wrap justify-center gap-1 px-4">
+          {alphabet.map(letter => {
+            const active = letters.includes(letter);
+            return active ? (
+              <a
+                href={`#letter-${letter}`}
+                class="w-9 h-9 flex items-center justify-center rounded-lg text-sm font-semibold transition-colors bg-purple-100 text-purple-800 hover:bg-purple-700 hover:text-white"
+              >
+                {letter}
+              </a>
+            ) : (
+              <span class="w-9 h-9 flex items-center justify-center rounded-lg text-sm text-gray-300 cursor-default">
+                {letter}
+              </span>
+            );
+          })}
+        </div>
+      </div>
+
+      <!-- Sections by letter -->
+      <div class="max-w-4xl mx-auto space-y-14">
+        {letters.map(letter => (
+          <section id={`letter-${letter}`} class="scroll-mt-20">
+            <!-- Letter heading -->
+            <div class="flex items-center gap-4 mb-6">
+              <span class="text-5xl font-bold text-purple-200 leading-none select-none">{letter}</span>
+              <div class="flex-1 h-px bg-purple-100"></div>
+            </div>
+
+            <!-- Cards grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {grouped[letter].map(demon => (
+                <div class="bg-white rounded-2xl border border-purple-100 shadow-sm p-5 flex flex-col gap-3 hover:border-purple-300 hover:shadow-md transition-all">
+                  <!-- Name + rank -->
+                  <div>
+                    <div class="flex items-start justify-between gap-2">
+                      <h2 class="font-bold text-gray-900 text-base leading-tight">{demon.name}</h2>
+                      {demon.slug && (
+                        <a
+                          href={`/blog/${demon.slug}`}
+                          class="flex-shrink-0 text-xs text-purple-500 hover:text-purple-700 font-medium underline underline-offset-2"
+                        >
+                          Подробнее →
+                        </a>
+                      )}
+                    </div>
+                    {demon.nameEn && (
+                      <p class="text-xs text-gray-400 mt-0.5">{demon.nameEn}</p>
+                    )}
+                  </div>
+
+                  {demon.rank && (
+                    <span class="inline-flex self-start items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-700 border border-purple-200">
+                      {demon.rank}
+                    </span>
+                  )}
+
+                  <p class="text-sm text-gray-600 leading-relaxed">{demon.sphere}</p>
+
+                  {demon.appearance && (
+                    <p class="text-xs text-gray-400 italic border-l-2 border-purple-100 pl-3">
+                      {demon.appearance}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+
+      <!-- Bottom note -->
+      <p class="text-center text-sm text-gray-400 mt-16 max-w-md mx-auto">
+        Глоссарий пополняется. Все карточки основаны на текстах гримуаров и академических исследованиях по демонологии.
+      </p>
+
+    </div>
+  </main>
+
+  <Footer />
+</MainLayout>
