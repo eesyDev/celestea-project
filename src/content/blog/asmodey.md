@@ -3,7 +3,7 @@ title: "Асмодей: Архитектор человеческой одерж
 description: "Его корни уходят в зороастрийскую древность, к грозному духу по имени Аэшма-дэва."
 pubDate: 2026-01-31
 image: "/assets/img/blog/asmodeus.jpg"
-category: "myths"
+category: "demons"
 tags: ["мифология", "асмодей", "демонология", "зороастризм", "оккультизм"]
 slug: "asmodeus-demon"
 ---
