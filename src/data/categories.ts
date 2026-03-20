@@ -6,5 +6,6 @@ export const categoryNames: Record<string, string> = {
   'horoscope': 'Зодиаки',
   'planets': 'Планеты',
   'myths': 'Мифология',
-  'rituals': 'Ритуалы'
+  'rituals': 'Ритуалы',
+  'demons' : 'Демоны'
 };
