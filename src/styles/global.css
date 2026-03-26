@@ -9,6 +9,11 @@
   margin-top: 1rem;
 }
 
+p a {
+  text-decoration: underline;
+  font-style: italic;
+}
+
 .faq-accordion details {
   border: 1px solid rgba(200, 146, 78, 0.25);
   border-radius: 10px;
