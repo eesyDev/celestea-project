@@ -7,6 +7,7 @@ import Footer from '../components/Footer.astro';
 <MainLayout
   title="Матрица судьбы онлайн — расчёт по дате рождения | Celestea"
   description="Бесплатный расчёт матрицы судьбы по дате рождения. Узнайте свой жизненный код, предназначение и кармические программы через язык 22 арканов Таро."
+  image="/assets/img/hero.png"
 >
   <Header />
 
@@ -47,8 +48,13 @@ import Footer from '../components/Footer.astro';
       <!-- Result -->
       <div id="result" class="hidden">
 
-        <!-- Date display -->
-        <p id="date-display" class="text-center text-gray-500 mb-8 text-sm"></p>
+        <!-- Date display + copy link -->
+        <div class="flex items-center justify-center gap-4 mb-8 flex-wrap">
+          <p id="date-display" class="text-gray-500 text-sm"></p>
+          <button id="copy-link-btn" class="text-xs bg-purple-100 hover:bg-purple-200 text-purple-700 px-3 py-1.5 rounded-lg transition-colors font-medium">
+            Скопировать ссылку
+          </button>
+        </div>
 
         <!-- SVG Matrix -->
         <div class="flex justify-center mb-14">
@@ -70,8 +76,8 @@ import Footer from '../components/Footer.astro';
         </div>
 
         <!-- Legend -->
-        <div class="max-w-2xl mx-auto mb-4 bg-purple-50 rounded-2xl p-6">
-          <h2 class="text-lg font-bold text-purple-900 mb-12 text-center">Позиции матрицы</h2>
+        <div class="max-w-2xl mx-auto mb-8 bg-purple-50 rounded-2xl p-6">
+          <h2 class="text-lg font-bold text-purple-900 mb-4 text-center">Позиции матрицы</h2>
           <div id="legend-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm"></div>
         </div>
 
@@ -79,7 +85,8 @@ import Footer from '../components/Footer.astro';
         <!-- <p class="text-center text-sm text-purple-400 mb-8 italic">Наведите на кружок — увидите что означает позиция. Подробные интерпретации — ниже ↓</p> -->
 
         <!-- Interpretation cards -->
-        <h2 class="text-xl font-bold text-purple-900 mb-8  text-center">Расшифровка вашей матрицы</h2>
+        <h2 class="text-xl font-bold text-purple-900 text-center">Расшифровка вашей матрицы</h2>
+        <div id="summary-card" class="max-w-2xl mx-auto mb-8 mt-8"></div>
         <div id="cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 mt-12"></div>
 
       </div>
@@ -262,37 +269,46 @@ function renderSVG(matrix) {
   const svgEl = document.getElementById('matrix-svg');
   const svgContainer = svgEl.parentElement;
 
+  let activeNode = null;
+
+  function showTooltip(node, e) {
+    const key = node.dataset.key;
+    const pos = POSITIONS[key];
+    const num = matrix[key];
+    const arc = ARCANA[num];
+    tooltip.innerHTML = `
+      <div class="text-xs text-purple-500 uppercase tracking-wide font-semibold mb-1">${pos.letter}. ${pos.label}</div>
+      <div class="font-bold text-gray-800 mb-2">${num} · ${arc.name} · ${arc.key}</div>
+      <div class="text-gray-600 text-xs leading-relaxed">${pos.theme}</div>
+    `;
+    tooltip.classList.remove('hidden');
+    positionTooltip(e);
+    activeNode = node;
+  }
+
   svg.querySelectorAll('.matrix-node').forEach(node => {
-    node.addEventListener('mouseenter', (e) => {
-      const key = node.dataset.key;
-      const pos = POSITIONS[key];
-      const num = matrix[key];
-      const arc = ARCANA[num];
-      tooltip.innerHTML = `
-        <div class="text-xs text-purple-500 uppercase tracking-wide font-semibold mb-1">${pos.letter}. ${pos.label}</div>
-        <div class="font-bold text-gray-800 mb-2">${num} · ${arc.name} · ${arc.key}</div>
-        <div class="text-gray-600 text-xs leading-relaxed">${pos.theme}</div>
-      `;
-      tooltip.classList.remove('hidden');
-      positionTooltip(e);
+    node.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (activeNode === node) {
+        tooltip.classList.add('hidden');
+        activeNode = null;
+      } else {
+        showTooltip(node, e);
+      }
     });
+  });
 
-    node.addEventListener('mousemove', positionTooltip);
-
-    node.addEventListener('mouseleave', () => {
-      tooltip.classList.add('hidden');
-    });
+  document.addEventListener('click', () => {
+    tooltip.classList.add('hidden');
+    activeNode = null;
   });
 
   function positionTooltip(e) {
     const rect = svgContainer.getBoundingClientRect();
-    const svgRect = svgEl.getBoundingClientRect();
-    // Compute position relative to the container
     let x = e.clientX - rect.left + 12;
-    let y = e.clientY - rect.top - 30;
+    let y = e.clientY - rect.top - 80;
 
-    // Keep tooltip inside container horizontally
-    const tipW = 288; // w-72 = 18rem = 288px
+    const tipW = 288;
     if (x + tipW > rect.width) x = e.clientX - rect.left - tipW - 12;
     if (y < 0) y = 0;
 
@@ -361,13 +377,32 @@ function renderCards(matrix) {
   }).join('');
 }
 
-// ─── Form handler ──────────────────────────────────────────────────────────────
-document.getElementById('matrix-form').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const raw = document.getElementById('birthdate').value;
-  if (!raw) return;
+// ─── Summary card ──────────────────────────────────────────────────────────────
+function renderSummary(matrix) {
+  const container = document.getElementById('summary-card');
+  const center = ARCANA[matrix.CENTER];
+  const a = ARCANA[matrix.A];
+  const d = ARCANA[matrix.D];
+  container.innerHTML = `
+    <div class="bg-gradient-to-br from-purple-50 to-violet-100 rounded-2xl p-8 border border-purple-200">
+      <h3 class="font-bold text-purple-900 text-lg mb-4 text-center">Общее прочтение матрицы</h3>
+      <p class="text-gray-700 leading-relaxed text-sm">
+        Ядро вашей матрицы — <strong>${matrix.CENTER} · ${center.name} (${center.key})</strong>.
+        ${center.desc}
+      </p>
+      <p class="text-gray-600 text-sm mt-3 leading-relaxed">
+        Личная энергия (<strong>${a.name} · ${a.key}</strong>) встречается с высшим предназначением (<strong>${d.name} · ${d.key}</strong>).
+        Все остальные позиции — деньги, любовь, родовые программы — разворачиваются вокруг этой оси.
+      </p>
+    </div>
+  `;
+}
 
+// ─── Calculate helper ──────────────────────────────────────────────────────────
+function calculate(raw) {
+  if (!raw) return;
   const [year, month, day] = raw.split('-').map(Number);
+  if (!year || !month || !day) return;
   const matrix = calcMatrix(day, month, year);
 
   document.getElementById('date-display').textContent =
@@ -375,9 +410,47 @@ document.getElementById('matrix-form').addEventListener('submit', (e) => {
 
   renderSVG(matrix);
   renderLegend(matrix);
+  renderSummary(matrix);
   renderCards(matrix);
 
   document.getElementById('result').classList.remove('hidden');
   document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  const url = new URL(window.location.href);
+  url.searchParams.set('d', raw);
+  history.replaceState(null, '', url.toString());
+
+  document.querySelector('#matrix-form button[type="submit"]').textContent = 'Пересчитать';
+}
+
+// ─── Form handler ──────────────────────────────────────────────────────────────
+document.getElementById('matrix-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  calculate(document.getElementById('birthdate').value);
 });
+
+// ─── Copy link button ──────────────────────────────────────────────────────────
+document.getElementById('copy-link-btn').addEventListener('click', () => {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.getElementById('copy-link-btn');
+    const orig = btn.textContent;
+    btn.textContent = 'Скопировано!';
+    btn.classList.add('bg-green-100', 'text-green-700');
+    btn.classList.remove('bg-purple-100', 'text-purple-700');
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.classList.remove('bg-green-100', 'text-green-700');
+      btn.classList.add('bg-purple-100', 'text-purple-700');
+    }, 2000);
+  });
+});
+
+// ─── Init: max date + load from URL ───────────────────────────────────────────
+document.getElementById('birthdate').max = new Date().toISOString().split('T')[0];
+const urlParams = new URLSearchParams(window.location.search);
+const urlDate = urlParams.get('d');
+if (urlDate && /^\d{4}-\d{2}-\d{2}$/.test(urlDate)) {
+  document.getElementById('birthdate').value = urlDate;
+  calculate(urlDate);
+}
 </script>
