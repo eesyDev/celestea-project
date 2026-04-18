@@ -34,7 +34,11 @@ const relatedPosts = allPosts
     <Header/>
         <article class="prose lg:prose-xl mx-auto py-10 article-content">
             <div class="container container-sm">
-                {entry.data.image && <img src={entry.data.image} alt={entry.data.title} class="rounded-lg shadow-md my-6" />}
+                {entry.data.image && (
+                    entry.data.category === 'tarot'
+                        ? <img src={entry.data.image} alt={entry.data.title} class="rounded-lg shadow-md my-6 tarot-card-img" />
+                        : <img src={entry.data.image} alt={entry.data.title} class="rounded-lg shadow-md my-6" />
+                )}
                 
                 <Content />
 
