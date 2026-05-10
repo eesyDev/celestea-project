@@ -5,6 +5,7 @@ pubDate: 2026-04-05
 image: "/assets/img/capricorn.png"
 category: "horoscope"
 tags: ["козерог", "знаки зодиака", "козерог характер", "козерог в любви", "астрология", "козерог женщина", "козерог мужчина", "козерог зодиак"]
+noindex: true
 slug: "capricorn-zodiac-sign"
 ---
 

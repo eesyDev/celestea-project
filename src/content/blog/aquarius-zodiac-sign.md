@@ -5,6 +5,7 @@ pubDate: 2026-04-05
 image: "/assets/img/aquarius.png"
 category: "horoscope"
 tags: ["водолей", "знаки зодиака", "водолей характер", "водолей в любви", "астрология", "водолей женщина", "водолей мужчина", "водолей зодиак"]
+noindex: true
 slug: "aquarius-zodiac-sign"
 ---
 

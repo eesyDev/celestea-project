@@ -5,6 +5,7 @@ pubDate: 2026-04-05
 image: "/assets/img/cancer.png"
 category: "horoscope"
 tags: ["рак", "знаки зодиака", "рак характер", "рак в любви", "астрология", "рак женщина", "рак мужчина", "рак зодиак"]
+noindex: true
 slug: "cancer-zodiac-sign"
 ---
 

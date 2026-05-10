@@ -5,6 +5,7 @@ pubDate: 2026-04-05
 image: "/assets/img/taurus.png"
 category: "horoscope"
 tags: ["телец", "знаки зодиака", "телец характер", "телец в любви", "астрология", "телец женщина", "телец мужчина", "телец зодиак"]
+noindex: true
 slug: "taurus-zodiac-sign"
 ---
 

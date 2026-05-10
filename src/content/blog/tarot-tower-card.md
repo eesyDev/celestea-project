@@ -5,6 +5,7 @@ pubDate: 2026-04-18
 image: "/assets/img/blog/tarot/tower.jpg"
 category: "tarot"
 tags: ["таро", "старшие арканы", "карта башня", "XVI аркан", "значение карт таро"]
+noindex: true
 slug: "tarot-tower-card"
 ---
 
