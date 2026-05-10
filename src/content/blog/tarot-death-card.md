@@ -5,6 +5,7 @@ pubDate: 2026-04-18
 image: "/assets/img/blog/tarot/RWS_Tarot_13_Death.jpg"
 category: "tarot"
 tags: ["таро", "старшие арканы", "карта смерть", "значение карт таро", "XIII аркан"]
+noindex: true
 slug: "tarot-death-card"
 ---
 

@@ -5,6 +5,7 @@ pubDate: 2026-04-18
 image: "/assets/img/blog/tarot/fool.jpeg"
 category: "tarot"
 tags: ["таро", "старшие арканы", "карта дурак", "0 аркан", "значение карт таро"]
+noindex: true
 slug: "tarot-fool-card"
 ---
 

@@ -30,6 +30,7 @@ const relatedPosts = allPosts
     image={entry.data.image}
     type="article"
     pubDate={new Date(entry.data.pubDate)}
+    noindex={entry.data.noindex ?? false}
 >
     <Header/>
         <article class="prose lg:prose-xl mx-auto py-10 article-content">

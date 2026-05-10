@@ -5,6 +5,7 @@ pubDate: 2026-04-05
 image: "/assets/img/pieces.png"
 category: "horoscope"
 tags: ["рыбы", "знаки зодиака", "рыбы характер", "рыбы в любви", "астрология", "рыбы женщина", "рыбы мужчина", "рыбы зодиак"]
+noindex: true
 slug: "pisces-zodiac-sign"
 ---
 

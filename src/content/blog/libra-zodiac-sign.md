@@ -5,6 +5,7 @@ pubDate: 2026-04-05
 image: "/assets/img/libra.png"
 category: "horoscope"
 tags: ["весы", "знаки зодиака", "весы характер", "весы в любви", "астрология", "весы женщина", "весы мужчина", "весы зодиак"]
+noindex: true
 slug: "libra-zodiac-sign"
 ---
 

@@ -5,6 +5,7 @@ pubDate: 2026-04-05
 image: "/assets/img/leo.png"
 category: "horoscope"
 tags: ["лев", "знаки зодиака", "лев характер", "лев в любви", "астрология", "лев женщина", "лев мужчина", "лев зодиак"]
+noindex: true
 slug: "leo-zodiac-sign"
 ---
 

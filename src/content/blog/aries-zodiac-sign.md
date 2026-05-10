@@ -5,6 +5,7 @@ pubDate: 2026-04-05
 image: "/assets/img/aries.png"
 category: "horoscope"
 tags: ["овен", "знаки зодиака", "овен характер", "овен в любви", "астрология", "овен женщина", "овен мужчина", "овен зодиак"]
+noindex: true
 slug: "aries-zodiac-sign"
 ---
 

@@ -5,6 +5,7 @@ pubDate: 2026-04-05
 image: "/assets/img/saggitarius.png"
 category: "horoscope"
 tags: ["стрелец", "знаки зодиака", "стрелец характер", "стрелец в любви", "астрология", "стрелец женщина", "стрелец мужчина", "стрелец зодиак"]
+noindex: true
 slug: "sagittarius-zodiac-sign"
 ---
 

@@ -5,6 +5,7 @@ pubDate: 2026-04-05
 image: "/assets/img/virgin.png"
 category: "horoscope"
 tags: ["дева", "знаки зодиака", "дева характер", "дева в любви", "астрология", "дева женщина", "дева мужчина", "дева зодиак"]
+noindex: true
 slug: "virgo-zodiac-sign"
 ---
 

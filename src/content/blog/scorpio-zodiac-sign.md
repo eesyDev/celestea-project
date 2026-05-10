@@ -5,6 +5,7 @@ pubDate: 2026-04-05
 image: "/assets/img/scorpio.png"
 category: "horoscope"
 tags: ["скорпион", "знаки зодиака", "скорпион характер", "скорпион в любви", "тёмная астрология", "астрология", "скорпион женщина", "скорпион мужчина"]
+noindex: true
 slug: "scorpio-zodiac-sign"
 ---
 

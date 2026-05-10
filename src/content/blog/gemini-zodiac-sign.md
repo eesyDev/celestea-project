@@ -5,6 +5,7 @@ pubDate: 2026-04-05
 image: "/assets/img/gemini.png"
 category: "horoscope"
 tags: ["близнецы", "знаки зодиака", "близнецы характер", "близнецы в любви", "астрология", "близнецы женщина", "близнецы мужчина", "близнецы зодиак"]
+noindex: true
 slug: "gemini-zodiac-sign"
 ---
 
