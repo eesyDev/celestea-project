@@ -16,6 +16,19 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
+function extractFAQ(body: string): Array<{question: string; answer: string}> {
+  const section = body.match(/##\s*Часто задаваемые вопросы([\s\S]*?)(?=\n##\s|$)/)?.[1] ?? '';
+  const items: Array<{question: string; answer: string}> = [];
+  const re = /\*\*([^*\n]+)\*\*\n([^\n*][^\n]*)/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(section)) !== null) {
+    items.push({ question: m[1].trim(), answer: m[2].trim() });
+  }
+  return items;
+}
+
+const faqItems = extractFAQ(entry.body);
+const slug = entry.data.slug ?? entry.slug;
 const allPosts = await getCollection('blog');
 const relatedPosts = allPosts
   .filter(post => post.slug !== entry.slug)
@@ -31,29 +44,43 @@ const relatedPosts = allPosts
     type="article"
     pubDate={new Date(entry.data.pubDate)}
     noindex={entry.data.noindex ?? false}
+    breadcrumbs={[
+        { name: 'Главная', url: '/' },
+        { name: 'Блог', url: '/blog/' },
+        { name: entry.data.title, url: `/blog/${slug}/` },
+    ]}
+    tags={entry.data.tags}
+    faqItems={faqItems.length > 0 ? faqItems : undefined}
 >
     <Header/>
-        <article class="prose lg:prose-xl mx-auto py-10 article-content">
+        <article class="article-content">
             <div class="container container-sm">
                 {entry.data.image && (
                     entry.data.category === 'tarot'
-                        ? <img src={entry.data.image} alt={entry.data.title} class="rounded-lg shadow-md my-6 tarot-card-img" />
-                        : <img src={entry.data.image} alt={entry.data.title} class="rounded-lg shadow-md my-6" />
+                        ? <img src={entry.data.image} alt={entry.data.title} class="tarot-card-img" />
+                        : <img src={entry.data.image} alt={entry.data.title} class="article-hero-img" />
                 )}
-                
+
                 <Content />
 
                 <div class="article-author">
-                    <p>Автор: <a href="/author">Алина Островерхова</a></p>
+                    <img src="/favicon.png" alt="Celestea" class="article-author__avatar" />
+                    <div>
+                        <a href="/author/" class="article-author__name">Алина Островерхова</a>
+                        <span class="article-author__role">Астролог и автор проекта</span>
+                    </div>
                 </div>
             </div>
         </article>
 
         {relatedPosts.length > 0 && (
-          <section class="py-10">
+          <section class="related-posts">
             <div class="container">
-              <h2 class="text-2xl font-bold text-center mb-8">Вам может понравиться</h2>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+              <div class="heading" style="text-align:center; margin: 0 auto 48px; max-width: 480px;">
+                <p class="pre-title">Читайте также</p>
+                <h2 class="h2">Похожие статьи</h2>
+              </div>
+              <div class="related-posts__grid">
                 {relatedPosts.map(post => (
                   <PostCard post={post} />
                 ))}

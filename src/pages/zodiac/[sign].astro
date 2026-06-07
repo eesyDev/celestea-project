@@ -82,7 +82,14 @@ const scoreColor = (score: number) => {
   return '#f44336';
 };
 ---
-<MainLayout title={signData.seo_title} description={signData.seo_desc}>
+<MainLayout
+    title={signData.seo_title}
+    description={signData.seo_desc}
+    breadcrumbs={[
+        { name: 'Главная', url: '/' },
+        { name: signData.name, url: `/zodiac/${signData.slug}/` },
+    ]}
+>
     <Header />
     <main class="zodiac-single">
         <div class="container">

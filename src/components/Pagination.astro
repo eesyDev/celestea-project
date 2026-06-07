@@ -2,37 +2,62 @@
 const { page } = Astro.props;
 ---
 
-<nav class="flex justify-center space-x-2 mt-12" aria-label="Pagination">
+<nav class="pagination-nav" aria-label="Pagination">
   {page.url.prev ? (
-    <a
-      href={page.url.prev}
-      class="px-4 py-2 bg-white border border-purple-200 rounded-lg text-purple-700 hover:bg-purple-50 transition-colors duration-200"
-    >
+    <a href={page.url.prev} class="pagination-btn pagination-btn--active">
       &larr; Назад
     </a>
   ) : (
-    <span class="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-400 cursor-not-allowed">
-      &larr; Назад
-    </span>
+    <span class="pagination-btn pagination-btn--disabled">&larr; Назад</span>
   )}
 
-  <div class="hidden sm:flex items-center space-x-2">
-    {/* Simple page indicators could be added here if needed */}
-    <span class="px-4 py-2 bg-purple-600 text-white rounded-lg">
-      Страница {page.currentPage} из {page.lastPage}
-    </span>
-  </div>
+  <span class="pagination-info">
+    {page.currentPage} / {page.lastPage}
+  </span>
 
   {page.url.next ? (
-    <a
-      href={page.url.next}
-      class="px-4 py-2 bg-white border border-purple-200 rounded-lg text-purple-700 hover:bg-purple-50 transition-colors duration-200"
-    >
-      Вперед &rarr;
+    <a href={page.url.next} class="pagination-btn pagination-btn--active">
+      Вперёд &rarr;
     </a>
   ) : (
-    <span class="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-400 cursor-not-allowed">
-      Вперед &rarr;
-    </span>
+    <span class="pagination-btn pagination-btn--disabled">Вперёд &rarr;</span>
   )}
 </nav>
+
+<style>
+.pagination-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-bottom: 16px;
+}
+.pagination-btn {
+  padding: 10px 28px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid var(--gold);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.pagination-btn--active {
+  color: var(--dark-blue);
+  background: transparent;
+}
+.pagination-btn--active:hover {
+  background: var(--gold);
+  color: #fff;
+}
+.pagination-btn--disabled {
+  color: #c0c0cc;
+  border-color: #ddd;
+  cursor: not-allowed;
+}
+.pagination-info {
+  font-size: 0.875rem;
+  color: #9b9baa;
+  min-width: 56px;
+  text-align: center;
+}
+</style>

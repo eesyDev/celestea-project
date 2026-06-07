@@ -4,7 +4,12 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<MainLayout title="О проекте" description="Кто мы и зачем создали этот астрологический портал">
+<MainLayout
+    title="О проекте"
+    description="Кто мы и зачем создали этот астрологический портал"
+    pageType="AboutPage"
+    breadcrumbs={[{ name: 'Главная', url: '/' }, { name: 'О проекте', url: '/about/' }]}
+>
     <Header />
     <main class="static-page">
         <div class="container container-sm">

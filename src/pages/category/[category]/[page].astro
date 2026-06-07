@@ -15,37 +15,76 @@ export async function getStaticPaths({ paginate }) {
     const filteredPosts = allPosts
       .filter((post) => post.data.category === category)
       .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-    
-    return paginate(filteredPosts, {
-      params: { category },
-      pageSize: 12,
-    });
+    return paginate(filteredPosts, { params: { category }, pageSize: 12 });
   });
 }
 
 const { category } = Astro.params;
 const { page } = Astro.props;
-
 const pageTitle = categoryNames[category] || category;
 ---
 
-<MainLayout title={`${pageTitle} - Страница ${page.currentPage} | Celestea`} description={`Статьи в рубрике «${pageTitle}» — астрологический портал Celestea.`}>
-    <Header/>
-    <main class="container mx-auto px-4 py-12">
+<MainLayout
+  title={`${pageTitle} — Страница ${page.currentPage} | Celestea`}
+  description={`Статьи в рубрике «${pageTitle}» — астрологический портал Celestea.`}
+  breadcrumbs={[
+    { name: 'Главная', url: '/' },
+    { name: 'Блог', url: '/blog/' },
+    { name: pageTitle, url: `/category/${category}/1` },
+  ]}
+  pageType="CollectionPage"
+>
+  <Header />
+  <main class="category-listing">
+    <div class="container">
 
-    <div class="mb-8 text-center">
-        <a href="/blog/1" class="text-sm text-purple-500 hover:underline mb-2 block">← Назад ко всем статьям</a>
-        <h1 class="text-3xl font-bold text-purple-900">Рубрика: {pageTitle}</h1>
-    </div>
+      <div class="category-listing__header">
+        <a href="/blog/1" class="category-listing__back">← Все статьи</a>
+        <p class="pre-title">Рубрика</p>
+        <h1 class="h1">{pageTitle}</h1>
+      </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="posts-grid">
         {page.data.map((post) => (
-            <PostCard post={post}/>
+          <PostCard post={post} />
         ))}
+      </div>
+
+      <Pagination page={page} />
     </div>
-
-    <Pagination page={page} />
-
-    </main>
-    <Footer/>
+  </main>
+  <Footer />
 </MainLayout>
+
+<style>
+.category-listing {
+  padding: 60px 0 80px;
+}
+.category-listing__header {
+  text-align: center;
+  margin-bottom: 52px;
+}
+.category-listing__back {
+  display: inline-block;
+  font-size: 0.875rem;
+  color: var(--gold);
+  text-decoration: none;
+  margin-bottom: 20px;
+  transition: opacity 0.2s;
+}
+.category-listing__back:hover { opacity: 0.7; }
+.category-listing__header .pre-title { margin-bottom: 8px; }
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin-bottom: 60px;
+}
+@media (max-width: 1024px) {
+  .posts-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .posts-grid { grid-template-columns: 1fr; }
+  .category-listing { padding: 40px 0 60px; }
+}
+</style>

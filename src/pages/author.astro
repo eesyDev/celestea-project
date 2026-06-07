@@ -4,7 +4,11 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<MainLayout title="Алина Островерхова — автор Celestea" description="Алина Островерхова — астролог и исследователь эзотерики, автор проекта Celestea. Более 9 лет изучает астрологию, нумерологию и символику.">
+<MainLayout
+    title="Алина Островерхова — автор Celestea"
+    description="Алина Островерхова — астролог и исследователь эзотерики, автор проекта Celestea. Более 9 лет изучает астрологию, нумерологию и символику."
+    breadcrumbs={[{ name: 'Главная', url: '/' }, { name: 'Об авторе', url: '/author/' }]}
+>
     <Header />
     <main class="static-page">
         <div class="container container-sm">
