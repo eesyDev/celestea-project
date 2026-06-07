@@ -4,7 +4,12 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<MainLayout title="Контакты" description="Свяжитесь с редакцией сайта. По вопросам рекламы и сотрудничества.">
+<MainLayout
+    title="Контакты"
+    description="Свяжитесь с редакцией сайта. По вопросам рекламы и сотрудничества."
+    pageType="ContactPage"
+    breadcrumbs={[{ name: 'Главная', url: '/' }, { name: 'Контакты', url: '/contacts/' }]}
+>
     <Header />
     <main class="static-page container">
         <h1 class="h1">Контакты</h1>

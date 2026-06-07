@@ -1,6 +1,6 @@
 html {
     --font-family: "Inter", sans-serif;
-    --font-family-serif: "Inter", sans-serif;
+    --font-family-serif: "Cormorant Garamond", Georgia, serif;
     --white: #fff;
     --black: #000;
     --orange: #EC4400;
@@ -218,12 +218,15 @@ h5,
 h6 {
     font-weight: 600;
     margin: 0;
-    font-family: var(--font-family-serif)
+    font-family: var(--font-family-serif);
+    letter-spacing: 0.01em;
+    line-height: 1.2
 }
 
 .h1,
 h1 {
-    font-size: 2.25em
+    font-size: 2.25em;
+    font-weight: 600
 }
 
 .h2,
@@ -600,7 +603,9 @@ p .paragraph {
 .header__logo {
     font-size: 40px;
     color: var(--gold);
-    font-weight: 600
+    font-weight: 600;
+    font-family: var(--font-family-serif);
+    letter-spacing: 0.04em
 }
 
 .header__nav {
@@ -1283,7 +1288,10 @@ p .paragraph {
 
 .footer .logo {
     font-size: 40px;
-    font-weight: 600
+    font-weight: 600;
+    font-family: var(--font-family-serif);
+    letter-spacing: 0.04em;
+    color: var(--gold)
 }
 
 .footer .motto {

@@ -8,7 +8,12 @@ interface Props {
     image?: string;
     type?: 'website' | 'article';
     pubDate?: Date;
+    dateModified?: Date;
     noindex?: boolean;
+    breadcrumbs?: Array<{name: string; url: string}>;
+    tags?: string[];
+    faqItems?: Array<{question: string; answer: string}>;
+    pageType?: 'WebPage' | 'AboutPage' | 'ContactPage' | 'CollectionPage';
 }
 
 const {
@@ -17,7 +22,12 @@ const {
     image,
     type = 'website',
     pubDate,
+    dateModified,
     noindex = false,
+    breadcrumbs,
+    tags,
+    faqItems,
+    pageType = 'WebPage',
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -25,25 +35,95 @@ const ogImage = image
     ? new URL(image, Astro.site).href
     : new URL('/assets/img/og-default.jpg', Astro.site).href;
 
-const jsonLd = type === 'article' ? JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    headline: title,
-    description: description,
-    image: ogImage,
-    datePublished: pubDate?.toISOString(),
-    url: canonicalURL.href,
-    author: {
-        '@type': 'Person',
-        name: 'Алина Островерхова',
-        url: new URL('/author', Astro.site).href,
-    },
-    publisher: {
+const siteUrl = Astro.site!.href;
+const pageUrl = canonicalURL.href;
+const orgId = `${siteUrl}#organization`;
+const websiteId = `${siteUrl}#website`;
+const pageId = `${pageUrl}#webpage`;
+const authorId = `${siteUrl}author/#person`;
+
+const graph: object[] = [
+    {
         '@type': 'Organization',
+        '@id': orgId,
         name: 'Celestea',
-        url: Astro.site,
+        url: siteUrl,
+        logo: `${siteUrl}favicon.png`,
+        description: 'Эзотерический и астрологический портал на русском языке: астрология, нумерология, демонология, знаки зодиака и лунные практики.',
     },
-}) : null;
+    {
+        '@type': 'WebSite',
+        '@id': websiteId,
+        url: siteUrl,
+        name: 'Celestea',
+        publisher: { '@id': orgId },
+        inLanguage: 'ru-RU',
+    },
+    {
+        '@type': pageType,
+        '@id': pageId,
+        url: pageUrl,
+        name: title,
+        description: description,
+        isPartOf: { '@id': websiteId },
+        publisher: { '@id': orgId },
+        inLanguage: 'ru-RU',
+        ...(dateModified ? { dateModified: dateModified.toISOString() } : {}),
+    },
+];
+
+if (breadcrumbs && breadcrumbs.length > 0) {
+    graph.push({
+        '@type': 'BreadcrumbList',
+        '@id': `${pageUrl}#breadcrumb`,
+        itemListElement: breadcrumbs.map((crumb, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            name: crumb.name,
+            item: new URL(crumb.url, Astro.site).href,
+        })),
+    });
+}
+
+if (type === 'article') {
+    graph.push({
+        '@type': 'Person',
+        '@id': authorId,
+        name: 'Алина Островерхова',
+        url: `${siteUrl}author/`,
+        worksFor: { '@id': orgId },
+    });
+    graph.push({
+        '@type': 'BlogPosting',
+        '@id': `${pageUrl}#article`,
+        headline: title,
+        description: description,
+        image: ogImage,
+        datePublished: pubDate?.toISOString(),
+        dateModified: dateModified?.toISOString() ?? pubDate?.toISOString(),
+        author: { '@id': authorId },
+        publisher: { '@id': orgId },
+        mainEntityOfPage: { '@id': pageId },
+        inLanguage: 'ru-RU',
+        ...(tags && tags.length > 0 ? {
+            mentions: tags.map(tag => ({ '@type': 'DefinedTerm', name: tag })),
+        } : {}),
+    });
+}
+
+if (faqItems && faqItems.length > 0) {
+    graph.push({
+        '@type': 'FAQPage',
+        '@id': `${pageUrl}#faq`,
+        mainEntity: faqItems.map(item => ({
+            '@type': 'Question',
+            name: item.question,
+            acceptedAnswer: { '@type': 'Answer', text: item.answer },
+        })),
+    });
+}
+
+const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
 ---
 <!DOCTYPE html>
 <html lang="ru">
@@ -51,6 +131,9 @@ const jsonLd = type === 'article' ? JSON.stringify({
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <title>{title}</title>
     <meta name="description" content={description}>
     {noindex && <meta name="robots" content="noindex, nofollow" />}
@@ -72,7 +155,7 @@ const jsonLd = type === 'article' ? JSON.stringify({
     <meta name="twitter:image" content={ogImage} />
 
     <!-- JSON-LD -->
-    {jsonLd && <script type="application/ld+json" set:html={jsonLd} />}
+    <script type="application/ld+json" set:html={jsonLd} />
 
     <meta name="yandex-verification" content="c3c96ffae6072e47" />
     <!-- Yandex.Metrika counter --> <script type="text/javascript">     (function(m,e,t,r,i,k,a){         m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};         m[i].l=1*new Date();         for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}         k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)     })(window, document,'script','https://mc.webvisor.org/metrika/tag_ww.js?id=106829808', 'ym');      ym(106829808, 'init', {ssr:true, trackHash:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true}); </script>  <!-- /Yandex.Metrika counter -->
